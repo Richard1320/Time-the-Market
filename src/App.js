@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import data from './data/historical-sp500.json';
 import LineChart from './components/LineChart.js';
+import Form from './components/Form.js';
 
 class App extends Component {
   constructor() {
@@ -11,10 +12,11 @@ class App extends Component {
       counter: 0,
       limit: 120,
       runningData: [],
+      gameMode: false,
     };
   }
-  componentDidMount() {
-    this.initGame();
+  gameTick() {
+    this.addPointToRunningData();
   }
   addPointToRunningData() {
     let counter = this.state.counter + 1;
@@ -41,14 +43,28 @@ class App extends Component {
     });
 
     this.interval = setInterval(() => {
-      this.addPointToRunningData();
+      this.gameTick();
 
       if (this.state.counter > this.state.limit) clearInterval(this.interval);
     }, 100);
   }
+  formSubmit(holdingPeriod) {
+    this.setState(
+      {
+        limit: holdingPeriod,
+      },
+      this.initGame
+    );
+  }
+  buySellHandler() {}
   render() {
     return (
       <div className="App">
+        <Form
+          gameMode={this.state.gameMode}
+          buySellHandler={this.buySellHandler.bind(this)}
+          formSubmit={this.formSubmit.bind(this)}
+        />
         <LineChart data={this.state.runningData} />
       </div>
     );
