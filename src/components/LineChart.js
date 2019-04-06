@@ -5,10 +5,16 @@ class LineChart extends Component {
   render() {
     let labels = [];
     let data = [];
+    let radius = [];
     if (this.props.data) {
-      this.props.data.forEach(element => {
+      this.props.data.forEach((element, index) => {
         labels.push(element.Date);
         data.push(element.SP500);
+        if (!(index % 100)) {
+          radius.push(5);
+        } else {
+          radius.push(0);
+        }
       });
     }
     let chartData = {
@@ -18,7 +24,7 @@ class LineChart extends Component {
           data: data,
           // borderColor: '#f00',
           borderWidth: 2,
-          radius: 0,
+          radius: radius,
         },
       ],
     };
@@ -33,6 +39,9 @@ class LineChart extends Component {
               display: false,
             },
             ticks: {
+              // userCallback: function(item, index) {
+              //   if (!(index % 100)) return item;
+              // },
               display: false,
             },
           },
