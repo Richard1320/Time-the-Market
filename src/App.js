@@ -25,36 +25,60 @@ class App extends Component {
     return transactionLength % 2 === 1;
   }
   gameTick() {
-    this.addPointToRunningData();
-  }
-  calculateNetWorth() {
-    if (this.isHolding()) {
-      let netWorth = this.state.netWorth;
-      let lastTwo = this.state.runningData.slice(-2);
-      let lastMonthPrice = lastTwo[0].SP500;
-      let thisMonthPrice = lastTwo[1].SP500;
-      let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
-
-      netWorth = netWorth * (1 + gainPercent);
-
-      this.setState({
-        netWorth: netWorth,
+    this.addPointToRunningData()
+      .then(result => {
+        return this.calculateNetWorth();
+      })
+      .then(result => {
+        this.gameEnd();
       });
+  }
+  checkIfEnd() {
+    // Check if timeline is over
+    return this.state.counter > this.state.limit;
+  }
+  gameEnd() {
+    if (this.checkIfEnd()) {
+      // Stop game "tick"
+      clearInterval(this.interval);
     }
   }
-  addPointToRunningData() {
-    let counter = this.state.counter + 1;
-    let sliceStart = this.state.startIndex;
-    let sliceEnd = this.state.startIndex + counter;
-    let runningData = data.slice(sliceStart, sliceEnd);
+  calculateNetWorth() {
+    return new Promise((resolve, reject) => {
+      if (this.isHolding()) {
+        let netWorth = this.state.netWorth;
+        let lastTwo = this.state.runningData.slice(-2);
+        let lastMonthPrice = lastTwo[0].SP500;
+        let thisMonthPrice = lastTwo[1].SP500;
+        let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
 
-    this.setState(
-      {
-        counter: counter,
-        runningData: runningData,
-      },
-      this.calculateNetWorth
-    );
+        netWorth = netWorth * (1 + gainPercent);
+
+        this.setState(
+          {
+            netWorth: netWorth,
+          },
+          resolve
+        );
+      } else {
+        resolve();
+      }
+    });
+  }
+  addPointToRunningData() {
+    return new Promise((resolve, reject) => {
+      let counter = this.state.counter + 1;
+      let sliceStart = this.state.startIndex;
+      let sliceEnd = this.state.startIndex + counter;
+      let runningData = data.slice(sliceStart, sliceEnd);
+      this.setState(
+        {
+          counter: counter,
+          runningData: runningData,
+        },
+        resolve
+      );
+    });
   }
   initGame() {
     // Randomize start index
@@ -70,11 +94,8 @@ class App extends Component {
       transactionLog: [],
     });
 
-    this.interval = setInterval(() => {
-      this.gameTick();
-
-      if (this.state.counter > this.state.limit) clearInterval(this.interval);
-    }, 100);
+    // Game step "tick"
+    this.interval = setInterval(this.gameTick.bind(this), 100);
   }
   formSubmit(timePeriod) {
     this.setState(
