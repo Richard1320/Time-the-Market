@@ -25,6 +25,7 @@ class LineChart extends Component {
           // borderColor: '#f00',
           borderWidth: 2,
           radius: radius,
+          lineTension: 0,
         },
       ],
     };
@@ -39,10 +40,7 @@ class LineChart extends Component {
               display: false,
             },
             ticks: {
-              // userCallback: function(item, index) {
-              //   if (!(index % 100)) return item;
-              // },
-              display: false,
+              // display: false,
             },
           },
         ],

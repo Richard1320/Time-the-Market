@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import data from './data/historical-sp500.json';
 import LineChart from './components/LineChart.js';
 import Form from './components/Form.js';
+import Summary from './components/Summary.js';
 
 class App extends Component {
   constructor() {
@@ -12,11 +13,28 @@ class App extends Component {
       counter: 0,
       limit: 120,
       runningData: [],
-      gameMode: false,
+      holding: false,
+      netWorth: 10000,
     };
   }
   gameTick() {
     this.addPointToRunningData();
+    this.calculateNetWorth();
+  }
+  calculateNetWorth() {
+    if (this.state.holding) {
+      let netWorth = this.state.netWorth;
+      let lastTwo = this.state.runningData.slice(-2);
+      let lastMonthPrice = lastTwo[0].SP500;
+      let thisMonthPrice = lastTwo[1].SP500;
+      let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
+      
+      netWorth = netWorth * (1 + gainPercent);
+
+      this.setState({
+        netWorth: netWorth,
+      });
+    }
   }
   addPointToRunningData() {
     let counter = this.state.counter + 1;
@@ -40,6 +58,7 @@ class App extends Component {
       counter: 0,
       runningData: [],
       startIndex: startIndex,
+      gameMode: false,
     });
 
     this.interval = setInterval(() => {
@@ -56,15 +75,20 @@ class App extends Component {
       this.initGame
     );
   }
-  buySellHandler() {}
+  buySellHandler() {
+    this.setState({
+      holding: !this.state.holding,
+    });
+  }
   render() {
     return (
       <div className="App">
         <Form
-          gameMode={this.state.gameMode}
+          holding={this.state.holding}
           buySellHandler={this.buySellHandler.bind(this)}
           formSubmit={this.formSubmit.bind(this)}
         />
+        <Summary netWorth={this.state.netWorth} />
         <LineChart data={this.state.runningData} />
       </div>
     );

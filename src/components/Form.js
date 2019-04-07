@@ -21,10 +21,16 @@ class Form extends Component {
     this.props.buySellHandler();
   }
   render() {
+    let buySellText;
+    if (this.props.holding) {
+      buySellText = 'Sell';
+    } else {
+      buySellText = 'Buy';
+    }
     return (
       <div className="component--form">
         <form onSubmit={this.formSubmit.bind(this)}>
-          <label for="input-timeline">Holding Period</label>
+          <label htmlFor="input-timeline">Holding Period</label>
           <select
             id="input-timeline"
             value={this.state.timeline}
@@ -39,7 +45,7 @@ class Form extends Component {
         </form>
 
         <button type="button" onClick={this.buySellHandler.bind(this)}>
-          {this.props.gameMode}
+          {buySellText}
         </button>
       </div>
     );
