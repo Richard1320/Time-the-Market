@@ -30,7 +30,7 @@ class Form extends Component {
     return (
       <div className="component--form">
         <form onSubmit={this.formSubmit.bind(this)}>
-          <label htmlFor="input-timeline">Holding Period</label>
+          <label htmlFor="input-timeline">Time Period</label>
           <select
             id="input-timeline"
             value={this.state.timeline}
