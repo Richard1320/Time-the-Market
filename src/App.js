@@ -13,22 +13,28 @@ class App extends Component {
       counter: 0,
       limit: 120,
       runningData: [],
-      holding: false,
       netWorth: 10000,
+      transactionLog: [],
     };
+  }
+  isHolding() {
+    // Every buy and sell is an item in the transaction log
+    // Odd number of items in log is holding (bought)
+    // Even number of items in log is waiting (sold)
+    let transactionLength = this.state.transactionLog.length;
+    return transactionLength % 2 === 1;
   }
   gameTick() {
     this.addPointToRunningData();
-    this.calculateNetWorth();
   }
   calculateNetWorth() {
-    if (this.state.holding) {
+    if (this.isHolding()) {
       let netWorth = this.state.netWorth;
       let lastTwo = this.state.runningData.slice(-2);
       let lastMonthPrice = lastTwo[0].SP500;
       let thisMonthPrice = lastTwo[1].SP500;
       let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
-      
+
       netWorth = netWorth * (1 + gainPercent);
 
       this.setState({
@@ -42,10 +48,13 @@ class App extends Component {
     let sliceEnd = this.state.startIndex + counter;
     let runningData = data.slice(sliceStart, sliceEnd);
 
-    this.setState({
-      counter: counter,
-      runningData: runningData,
-    });
+    this.setState(
+      {
+        counter: counter,
+        runningData: runningData,
+      },
+      this.calculateNetWorth
+    );
   }
   initGame() {
     // Randomize start index
@@ -58,7 +67,7 @@ class App extends Component {
       counter: 0,
       runningData: [],
       startIndex: startIndex,
-      gameMode: false,
+      transactionLog: [],
     });
 
     this.interval = setInterval(() => {
@@ -67,29 +76,38 @@ class App extends Component {
       if (this.state.counter > this.state.limit) clearInterval(this.interval);
     }, 100);
   }
-  formSubmit(holdingPeriod) {
+  formSubmit(timePeriod) {
     this.setState(
       {
-        limit: holdingPeriod,
+        limit: timePeriod,
       },
       this.initGame
     );
   }
   buySellHandler() {
+    let transactionLog = this.state.transactionLog;
+    let thisMonthIndex = this.state.startIndex + this.state.counter;
+    let thisMonthData = data[thisMonthIndex];
+    let thisMonthDate = thisMonthData.Date;
+    transactionLog.push(thisMonthDate);
+
     this.setState({
-      holding: !this.state.holding,
+      transactionLog: transactionLog,
     });
   }
   render() {
     return (
       <div className="App">
         <Form
-          holding={this.state.holding}
+          holding={this.isHolding()}
           buySellHandler={this.buySellHandler.bind(this)}
           formSubmit={this.formSubmit.bind(this)}
         />
         <Summary netWorth={this.state.netWorth} />
-        <LineChart data={this.state.runningData} />
+        <LineChart
+          data={this.state.runningData}
+          transactionLog={this.state.transactionLog}
+        />
       </div>
     );
   }

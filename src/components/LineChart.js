@@ -5,16 +5,35 @@ class LineChart extends Component {
   render() {
     let labels = [];
     let data = [];
-    let radius = [];
+    let pointRadius = [];
+    let pointBackgroundColors = [];
     if (this.props.data) {
       this.props.data.forEach((element, index) => {
-        labels.push(element.Date);
-        data.push(element.SP500);
-        if (!(index % 100)) {
-          radius.push(5);
+        let date = element.Date;
+        let price = element.SP500;
+        let transactionIndex = this.props.transactionLog.indexOf(date);
+
+        // Check if this month has a buy or sell event
+        if (transactionIndex !== -1) {
+          // Add a point on chart
+          pointRadius.push(5);
+
+          // Check if buy or sell
+          if (transactionIndex % 2) {
+            // Buy
+            // Odd items in array is even in 0 index
+            pointBackgroundColors.push('#ff1654');
+          } else {
+            // Sell
+            pointBackgroundColors.push('#90cd8a');
+          }
         } else {
-          radius.push(0);
+          // No event, hide radius
+          pointRadius.push(0);
+          pointBackgroundColors.push('#000');
         }
+        labels.push(date);
+        data.push(price);
       });
     }
     let chartData = {
@@ -24,8 +43,9 @@ class LineChart extends Component {
           data: data,
           // borderColor: '#f00',
           borderWidth: 2,
-          radius: radius,
+          radius: pointRadius,
           lineTension: 0,
+          pointBackgroundColor: pointBackgroundColors,
         },
       ],
     };
@@ -40,7 +60,7 @@ class LineChart extends Component {
               display: false,
             },
             ticks: {
-              // display: false,
+              display: true,
             },
           },
         ],
