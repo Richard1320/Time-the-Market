@@ -4,17 +4,24 @@ class Form extends Component {
   constructor() {
     super();
     this.state = {
-      timeline: 120,
+      timePeriod: 120,
+      startInvested: false,
     };
   }
   timelineHandler(e) {
     let value = e.target.value;
     this.setState({
-      timeline: value,
+      timePeriod: value,
+    });
+  }
+  startInvestedHandler(e) {
+    let value = e.target.checked;
+    this.setState({
+      startInvested: value,
     });
   }
   formSubmit(e) {
-    this.props.formSubmit(this.state.timeline);
+    this.props.formSubmit(this.state);
     e.preventDefault();
   }
   buySellHandler() {
@@ -30,9 +37,9 @@ class Form extends Component {
     return (
       <div className="component--form">
         <form onSubmit={this.formSubmit.bind(this)}>
-          <label htmlFor="input-timeline">Time Period</label>
+          <label htmlFor="input-time-period">Time Period</label>
           <select
-            id="input-timeline"
+            id="input-time-period"
             value={this.state.timeline}
             onChange={this.timelineHandler.bind(this)}
           >
@@ -41,6 +48,15 @@ class Form extends Component {
             <option value="320">30 Years</option>
             <option value="480">40 Years</option>
           </select>
+
+          <label htmlFor="input-start-invested">Start Invested</label>
+          <input
+            id="input-start-invested"
+            type="checkbox"
+            value={this.state.startInvested}
+            onChange={this.startInvestedHandler.bind(this)}
+          />
+
           <button type="submit">Retry</button>
         </form>
 
