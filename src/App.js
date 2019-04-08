@@ -11,10 +11,11 @@ class App extends Component {
     this.state = {
       startIndex: 0,
       counter: 0,
-      limit: 120,
+      timePeriod: 120,
       runningData: [],
       netWorth: 10000,
       transactionLog: [],
+      startInvested: false,
     };
   }
   isHolding() {
@@ -25,7 +26,10 @@ class App extends Component {
     return transactionLength % 2 === 1;
   }
   gameTick() {
-    this.addPointToRunningData()
+    this.moveToNewMonth()
+      .then(result => {
+        return this.addPointToRunningData();
+      })
       .then(result => {
         return this.calculateNetWorth();
       })
@@ -33,12 +37,12 @@ class App extends Component {
         this.gameTickCallback();
       });
   }
-  checkIfEnd() {
+  isEnd() {
     // Check if timeline is over
-    return this.state.counter > this.state.limit;
+    return this.state.counter > this.state.timePeriod;
   }
   gameTickCallback() {
-    if (this.checkIfEnd()) {
+    if (this.isEnd()) {
     } else {
       // Game step "tick"
       this.timeout = setTimeout(this.gameTick.bind(this), 100);
@@ -49,32 +53,49 @@ class App extends Component {
       if (this.isHolding()) {
         let netWorth = this.state.netWorth;
         let lastTwo = this.state.runningData.slice(-2);
-        let lastMonthPrice = lastTwo[0].SP500;
-        let thisMonthPrice = lastTwo[1].SP500;
-        let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
 
-        netWorth = netWorth * (1 + gainPercent);
+        // Check if running data has at least two months
+        // And this month is not a "buy" month
+        if (lastTwo[1]) {
+          let lastMonthPrice = lastTwo[0].SP500;
+          let thisMonthPrice = lastTwo[1].SP500;
+          let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
 
-        this.setState(
-          {
-            netWorth: netWorth,
-          },
-          resolve
-        );
+          netWorth = netWorth * (1 + gainPercent);
+
+          this.setState(
+            {
+              netWorth: netWorth,
+            },
+            resolve
+          );
+        } else {
+          resolve();
+        }
       } else {
         resolve();
       }
     });
   }
-  addPointToRunningData() {
+  moveToNewMonth() {
     return new Promise((resolve, reject) => {
       let counter = this.state.counter + 1;
+      this.setState(
+        {
+          counter: counter,
+        },
+        resolve
+      );
+    });
+  }
+  addPointToRunningData() {
+    return new Promise((resolve, reject) => {
+      let counter = this.state.counter;
       let sliceStart = this.state.startIndex;
       let sliceEnd = this.state.startIndex + counter;
       let runningData = data.slice(sliceStart, sliceEnd);
       this.setState(
         {
-          counter: counter,
           runningData: runningData,
         },
         resolve
@@ -84,8 +105,13 @@ class App extends Component {
   initGame() {
     // Randomize start index
     let count = data.length;
-    let maxStart = count - this.state.limit;
+    let maxStart = count - this.state.timePeriod;
     let startIndex = Math.floor(Math.random() * Math.floor(maxStart));
+    let transactionLog = [];
+
+    if (this.state.startInvested) {
+      transactionLog.push(data[startIndex].Date);
+    }
 
     // Reset variables
     this.setState(
@@ -93,16 +119,22 @@ class App extends Component {
         counter: 0,
         runningData: [],
         startIndex: startIndex,
-        transactionLog: [],
+        transactionLog: transactionLog,
         netWorth: 10000,
       },
-      this.gameTick.bind(this)
+      () => {
+        // Add starting month to running data
+        this.addPointToRunningData().then(() => {
+          this.gameTick();
+        });
+      }
     );
   }
-  formSubmit(timePeriod) {
+  formSubmit(formState) {
     this.setState(
       {
-        limit: timePeriod,
+        timePeriod: formState.timePeriod,
+        startInvested: formState.startInvested,
       },
       this.initGame
     );
