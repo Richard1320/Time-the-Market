@@ -30,17 +30,18 @@ class App extends Component {
         return this.calculateNetWorth();
       })
       .then(result => {
-        this.gameEnd();
+        this.gameTickCallback();
       });
   }
   checkIfEnd() {
     // Check if timeline is over
     return this.state.counter > this.state.limit;
   }
-  gameEnd() {
+  gameTickCallback() {
     if (this.checkIfEnd()) {
-      // Stop game "tick"
-      clearInterval(this.interval);
+    } else {
+      // Game step "tick"
+      this.timeout = setTimeout(this.gameTick.bind(this), 100);
     }
   }
   calculateNetWorth() {
@@ -87,15 +88,16 @@ class App extends Component {
     let startIndex = Math.floor(Math.random() * Math.floor(maxStart));
 
     // Reset variables
-    this.setState({
-      counter: 0,
-      runningData: [],
-      startIndex: startIndex,
-      transactionLog: [],
-    });
-
-    // Game step "tick"
-    this.interval = setInterval(this.gameTick.bind(this), 100);
+    this.setState(
+      {
+        counter: 0,
+        runningData: [],
+        startIndex: startIndex,
+        transactionLog: [],
+        netWorth: 10000,
+      },
+      this.gameTick.bind(this)
+    );
   }
   formSubmit(timePeriod) {
     this.setState(
