@@ -2,11 +2,48 @@ import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 
 class LineChart extends Component {
+  constructor() {
+    super();
+
+    let options = {
+      legend: {
+        display: false,
+      },
+      scales: {
+        xAxes: [
+          {
+            gridLines: {
+              display: false,
+            },
+            ticks: {
+              display: false,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              display: false,
+            },
+          },
+        ],
+      },
+    };
+
+    this.state = {
+      options: options,
+    };
+  }
+  isEnd() {
+    // Check if timeline is over
+    return this.props.counter > this.props.timePeriod;
+  }
   render() {
     let labels = [];
     let data = [];
     let pointRadius = [];
     let pointBackgroundColors = [];
+
     if (this.props.data) {
       this.props.data.forEach((element, index) => {
         let date = element.Date;
@@ -36,6 +73,7 @@ class LineChart extends Component {
         data.push(price);
       });
     }
+
     let chartData = {
       labels: labels,
       datasets: [
@@ -49,23 +87,12 @@ class LineChart extends Component {
         },
       ],
     };
-    let options = {
-      legend: {
-        display: false,
-      },
-      scales: {
-        xAxes: [
-          {
-            gridLines: {
-              display: false,
-            },
-            ticks: {
-              display: true,
-            },
-          },
-        ],
-      },
-    };
+
+    let options = this.state.options;
+
+    if (this.isEnd()) {
+      options.scales.xAxes[0].ticks = false;
+    }
 
     return (
       <div className="component--line-chart">
