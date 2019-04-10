@@ -20,14 +20,14 @@ class App extends Component {
   //     startInvested: false,
   //   };
   // }
-  // componentDidMount() {
-  //   this.props.fetchData();
-  // }
+  componentDidMount() {
+    this.props.fetchData();
+  }
   // isHolding() {
   //   // Every buy and sell is an item in the transaction log
   //   // Odd number of items in log is holding (bought)
   //   // Even number of items in log is waiting (sold)
-  //   let transactionLength = this.state.transactionLog.length;
+  //   let transactionLength = this.props.transactionLog.length;
   //   return transactionLength % 2 === 1;
   // }
   // gameTick() {
@@ -156,35 +156,11 @@ class App extends Component {
   //   });
   // }
   render() {
-    let date = 'foo';
-    console.log('this props', this.props.data);
-    try {
-      date = this.props.historicalData[0].Date;
-    } catch (err) {
-      // console.log(err);
-    }
-
     return (
       <div className="App">
-        {date}
-        <button
-          className="btn btn-primary"
-          onClick={() => this.props.fetchData()}
-        >
-          Change the Username
-        </button>
-        {/* <Form
-          holding={this.isHolding()}
-          buySellHandler={this.buySellHandler.bind(this)}
-          formSubmit={this.formSubmit.bind(this)}
-        />
-        <Summary netWorth={this.state.netWorth} />
-        <LineChart
-          data={this.state.runningData}
-          transactionLog={this.state.transactionLog}
-          timePeriod={this.state.timePeriod}
-          counter={this.state.counter}
-        /> */}
+        <Form />
+        <Summary />
+        <LineChart />
       </div>
     );
   }

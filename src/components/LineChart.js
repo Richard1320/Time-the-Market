@@ -1,51 +1,52 @@
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
+import { connect } from 'react-redux';
+
+const initialOptions = {
+  legend: {
+    display: false,
+  },
+  scales: {
+    xAxes: [
+      {
+        gridLines: {
+          display: false,
+        },
+        ticks: {
+          display: true,
+        },
+      },
+    ],
+    yAxes: [
+      {
+        ticks: {
+          display: true,
+        },
+      },
+    ],
+  },
+};
 
 class LineChart extends Component {
   constructor() {
     super();
 
-    let options = {
-      legend: {
-        display: false,
-      },
-      scales: {
-        xAxes: [
-          {
-            gridLines: {
-              display: false,
-            },
-            ticks: {
-              display: false,
-            },
-          },
-        ],
-        yAxes: [
-          {
-            ticks: {
-              display: false,
-            },
-          },
-        ],
-      },
-    };
-
     this.state = {
-      options: options,
+      options: initialOptions,
     };
   }
-  isEnd() {
-    // Check if timeline is over
-    return this.props.counter > this.props.timePeriod;
-  }
+  // isEnd() {
+  //   // Check if timeline is over
+  //   return this.props.counter > this.props.timePeriod;
+  // }
   render() {
     let labels = [];
     let data = [];
     let pointRadius = [];
     let pointBackgroundColors = [];
 
-    if (this.props.data) {
-      this.props.data.forEach((element, index) => {
+    if (this.props.runningData) {
+      this.props.runningData.forEach((element, index) => {
         let date = element.Date;
         let price = element.SP500;
         let transactionIndex = this.props.transactionLog.indexOf(date);
@@ -90,9 +91,9 @@ class LineChart extends Component {
 
     let options = this.state.options;
 
-    if (this.isEnd()) {
-      options.scales.xAxes[0].ticks = false;
-    }
+    // if (this.isEnd()) {
+    //   options.scales.xAxes[0].ticks = true;
+    // }
 
     return (
       <div className="component--line-chart">
@@ -102,4 +103,19 @@ class LineChart extends Component {
   }
 }
 
-export default LineChart;
+// const mapDispatchToProps = {
+//   fetchData,
+// };
+const mapStateToProps = function(state, ownProps) {
+  return {
+    runningData: state.runningData,
+    transactionLog: state.transactionLog,
+    timePeriod: state.timePeriod,
+    counter: state.counter,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(LineChart);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class Summary extends Component {
   render() {
@@ -11,4 +12,16 @@ class Summary extends Component {
   }
 }
 
-export default Summary;
+// const mapDispatchToProps = {
+//   fetchData,
+// };
+const mapStateToProps = function(state, ownProps) {
+  return {
+    netWorth: state.netWorth,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(Summary);
