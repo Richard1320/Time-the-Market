@@ -41,10 +41,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, startInvested: action.payload };
     }
     case TRIGGER_BUY_SELL: {
-      let transactionLog = state.transactionLog;
+      let transactionLog = state.transactionLog.slice(0);
       let thisMonthIndex = state.startIndex + state.counter;
       let thisMonthData = state.historicalData[thisMonthIndex];
       let thisMonthDate = thisMonthData.Date;
+
       transactionLog.push(thisMonthDate);
 
       return { ...state, transactionLog: transactionLog };

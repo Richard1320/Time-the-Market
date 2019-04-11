@@ -17,27 +17,13 @@ class Form extends Component {
     let value = e.target.checked;
     this.props.startInvestedHandler(value);
   }
-  startGameHandler(e) {
+  startGameHandler() {
     this.props.startGameHandler();
   }
   buySellHandler() {
     this.props.buySellHandler();
   }
-  isHolding() {
-    // Every buy and sell is an item in the transaction log
-    // Odd number of items in log is holding (bought)
-    // Even number of items in log is waiting (sold)
-    console.log('transactoin log', this.props.transactionLog);
-    let transactionLength = this.props.transactionLog.length;
-    return transactionLength % 2 === 1;
-  }
   render() {
-    let buySellText;
-    if (this.isHolding) {
-      buySellText = 'Sell';
-    } else {
-      buySellText = 'Buy';
-    }
     return (
       <div className="component--form">
         <label htmlFor="input-time-period">Time Period</label>
@@ -51,7 +37,6 @@ class Form extends Component {
           <option value="320">30 Years</option>
           <option value="480">40 Years</option>
         </select>
-
         <label htmlFor="input-start-invested">Start Invested</label>
         <input
           id="input-start-invested"
@@ -59,13 +44,11 @@ class Form extends Component {
           value={this.props.startInvested}
           onChange={this.startInvestedHandler.bind(this)}
         />
-
         <button type="button" onClick={this.startGameHandler.bind(this)}>
           Retry
         </button>
-
         <button type="button" onClick={this.buySellHandler.bind(this)}>
-          Buy / Sell
+          {this.props.transactionLog.length % 2 === 1 ? 'Sell' : 'Buy'}
         </button>
       </div>
     );
@@ -82,7 +65,7 @@ const mapStateToProps = function(state, ownProps) {
   return {
     timePeriod: state.timePeriod,
     startInvested: state.startInvested,
-    // transactionLog: state.transactionLog,
+    transactionLog: state.transactionLog,
   };
 };
 
