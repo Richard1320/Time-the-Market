@@ -11,13 +11,12 @@ import {
   CHANGE_TIME_PERIOD,
   CHANGE_START_INVESTED,
 } from './actionTypes';
+import { isEnd, isHolding } from '../Helpers';
 
-function isEnd() {
-  // Check if timeline is over
-  return store.getState().counter > store.getState().timePeriod;
-}
 function gameTickCallback() {
-  if (isEnd()) {
+  let counter = store.getState().counter;
+  let timePeriod = store.getState().timePeriod;
+  if (isEnd(counter, timePeriod)) {
   } else {
     setTimeout(gameTick, 100);
   }
@@ -26,16 +25,10 @@ function gameTickCallback() {
 function gameTick() {
   store.dispatch({ type: ADVANCE_NEW_MONTH });
   store.dispatch({ type: UPDATE_RUNNING_DATA });
-  if (isHolding()) store.dispatch({ type: UPDATE_NET_WORTH });
+  let transactionLog = store.getState().transactionLog;
+  if (isHolding(transactionLog)) store.dispatch({ type: UPDATE_NET_WORTH });
 
   gameTickCallback();
-}
-function isHolding() {
-  // Every buy and sell is an item in the transaction log
-  // Odd number of items in log is holding (bought)
-  // Even number of items in log is waiting (sold)
-  let transactionLength = store.getState().transactionLog.length;
-  return transactionLength % 2 === 1;
 }
 
 export function fetchData() {
@@ -58,28 +51,7 @@ export function startGameHandler() {
     gameTick();
   };
 }
-// export function startGameHandler() {
-//   return {
-//     type: START_GAME,
-//   };
-// }
-
-// export function advanceNewMonth() {
-//   return {
-//     type: ADVANCE_NEW_MONTH,
-//   };
-// }
-// export function updateRunningData() {
-//   return {
-//     type: UPDATE_RUNNING_DATA,
-//   };
-// }
-// export function calculateNetWorth() {
-//   return {
-//     type: CALCULATE_NET_WORTH,
-//   };
-// }
-export function buySellHandler(value) {
+export function buySellHandler() {
   return {
     type: TRIGGER_BUY_SELL,
   };

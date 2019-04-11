@@ -35,10 +35,6 @@ class LineChart extends Component {
       options: initialOptions,
     };
   }
-  // isEnd() {
-  //   // Check if timeline is over
-  //   return this.props.counter > this.props.timePeriod;
-  // }
   render() {
     let labels = [];
     let data = [];
@@ -89,15 +85,9 @@ class LineChart extends Component {
       ],
     };
 
-    let options = this.state.options;
-
-    // if (this.isEnd()) {
-    //   options.scales.xAxes[0].ticks = true;
-    // }
-
     return (
       <div className="component--line-chart">
-        <Line data={chartData} options={options} />
+        <Line data={chartData} options={this.state.options} />
       </div>
     );
   }
