@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import './scss/app.scss';
 import { fetchData } from './redux/actions';
 
 import LineChart from './components/LineChart.js';
