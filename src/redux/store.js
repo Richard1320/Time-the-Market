@@ -1,9 +1,17 @@
 import { applyMiddleware, createStore } from 'redux';
 import rootReducer from './reducers';
 import thunk from 'redux-thunk';
-// import logger from 'redux-logger';
+import logger from 'redux-logger';
 
-const middleware = applyMiddleware(thunk);
-// const middleware = applyMiddleware(thunk, logger);
+let middleware = [thunk];
 
-export default createStore(rootReducer, middleware);
+if (process.env.NODE_ENV !== 'production') {
+  // Be sure to ONLY add this middleware in development!
+  middleware = [
+    require('redux-immutable-state-invariant').default(),
+    // logger,
+    thunk,
+  ];
+}
+
+export default createStore(rootReducer, applyMiddleware(...middleware));
