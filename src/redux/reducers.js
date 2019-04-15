@@ -77,20 +77,19 @@ const reducer = (state = initialState, action) => {
     }
     case START_GAME: {
       // Randomize start index
-      let count = state.historicalData.length;
-      let maxStart = count - state.timePeriod;
-      let startIndex = Math.floor(Math.random() * Math.floor(maxStart));
       let transactionLog = [];
 
       if (state.startInvested) {
-        transactionLog.push(state.historicalData[startIndex].Date);
+        transactionLog.push(
+          state.historicalData[action.payload.startIndex].Date
+        );
       }
 
       // Reset variables
       let resetState = {
         counter: 0,
         runningData: [],
-        startIndex: startIndex,
+        startIndex: action.payload.startIndex,
         transactionLog: transactionLog,
         netWorth: 10000,
       };

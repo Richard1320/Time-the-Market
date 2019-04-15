@@ -45,7 +45,11 @@ export function fetchData() {
 }
 export function startGameHandler() {
   return dispatch => {
-    dispatch({ type: START_GAME });
+    let count = store.getState().historicalData.length;
+    let maxStart = count - store.getState().timePeriod;
+    let startIndex = Math.floor(Math.random() * Math.floor(maxStart));
+
+    dispatch({ type: START_GAME, payload: { startIndex: startIndex } });
     // Add starting month to running data
     dispatch({ type: UPDATE_RUNNING_DATA });
     gameTick();
