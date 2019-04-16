@@ -13,14 +13,14 @@ const initialOptions = {
           display: false,
         },
         ticks: {
-          display: true,
+          display: false,
         },
       },
     ],
     yAxes: [
       {
         ticks: {
-          display: true,
+          display: false,
         },
       },
     ],
@@ -30,10 +30,24 @@ const initialOptions = {
 class LineChart extends Component {
   constructor() {
     super();
-
     this.state = {
       options: initialOptions,
+      redraw: false,
     };
+  }
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.isPlaying !== prevProps.isPlaying) {
+      // Show dates and prices after game is over
+      let options = Object.assign({}, this.state.options);
+      options.scales.xAxes[0].ticks.display = !this.props.isPlaying;
+      options.scales.yAxes[0].ticks.display = !this.props.isPlaying;
+
+      // Redraw chart once to refresh options display
+      this.setState({ options: options, redraw: true }, () => {
+        this.setState({ redraw: false });
+      });
+    }
   }
   render() {
     let labels = [];
@@ -87,7 +101,11 @@ class LineChart extends Component {
 
     return (
       <div className="component--line-chart">
-        <Line data={chartData} options={this.state.options} />
+        <Line
+          data={chartData}
+          redraw={this.state.redraw}
+          options={this.state.options}
+        />
       </div>
     );
   }
@@ -102,6 +120,7 @@ const mapStateToProps = function(state, ownProps) {
     transactionLog: state.transactionLog,
     timePeriod: state.timePeriod,
     counter: state.counter,
+    isPlaying: state.isPlaying,
   };
 };
 
