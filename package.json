@@ -12,6 +12,7 @@
     "react-redux": "^6.0.1",
     "react-scripts": "2.1.8",
     "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
@@ -30,7 +31,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "redux-logger": "^3.0.6",
     "redux-immutable-state-invariant": "^2.1.0"
   }
 }
