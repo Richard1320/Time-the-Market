@@ -7,9 +7,11 @@ import {
   UPDATE_RUNNING_DATA,
   UPDATE_NET_WORTH,
   START_GAME,
+  STOP_GAME,
   TRIGGER_BUY_SELL,
   CHANGE_TIME_PERIOD,
   CHANGE_START_INVESTED,
+  UPDATE_TIMEOUT,
 } from './actionTypes';
 import { isEnd, isHolding } from '../Helpers';
 
@@ -18,7 +20,8 @@ function gameTickCallback() {
   let timePeriod = store.getState().timePeriod;
   if (isEnd(counter, timePeriod)) {
   } else {
-    setTimeout(gameTick, 100);
+    let timeoutID = setTimeout(gameTick, 100);
+    store.dispatch({ type: UPDATE_TIMEOUT, payload: timeoutID });
   }
 }
 
@@ -45,6 +48,8 @@ export function fetchData() {
 }
 export function startGameHandler() {
   return dispatch => {
+    stopGameHandler();
+
     let count = store.getState().historicalData.length;
     let maxStart = count - store.getState().timePeriod;
     let startIndex = Math.floor(Math.random() * Math.floor(maxStart));
@@ -53,6 +58,17 @@ export function startGameHandler() {
     // Add starting month to running data
     dispatch({ type: UPDATE_RUNNING_DATA });
     gameTick();
+  };
+}
+export function stopGameHandler() {
+  let timeoutID = store.getState().runningTimeout;
+
+  if (timeoutID) {
+    clearTimeout(timeoutID);
+  }
+
+  return {
+    type: STOP_GAME,
   };
 }
 export function buySellHandler() {

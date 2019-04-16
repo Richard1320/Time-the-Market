@@ -3,10 +3,13 @@ import { connect } from 'react-redux';
 
 import {
   startGameHandler,
+  stopGameHandler,
   buySellHandler,
   timePeriodHandler,
   startInvestedHandler,
 } from '../redux/actions';
+
+import { isHolding } from '../Helpers';
 
 class Form extends Component {
   timePeriodHandler(e) {
@@ -19,6 +22,9 @@ class Form extends Component {
   }
   startGameHandler() {
     this.props.startGameHandler();
+  }
+  stopGameHandler() {
+    this.props.stopGameHandler();
   }
   buySellHandler() {
     this.props.buySellHandler();
@@ -45,10 +51,13 @@ class Form extends Component {
           onChange={this.startInvestedHandler.bind(this)}
         />
         <button type="button" onClick={this.startGameHandler.bind(this)}>
-          Retry
+          Restart
+        </button>
+        <button type="button" onClick={this.stopGameHandler.bind(this)}>
+          Stop
         </button>
         <button type="button" onClick={this.buySellHandler.bind(this)}>
-          {this.props.transactionLog.length % 2 === 1 ? 'Sell' : 'Buy'}
+          {isHolding(this.props.transactionLog) ? 'Sell' : 'Buy'}
         </button>
       </div>
     );
@@ -60,6 +69,7 @@ const mapDispatchToProps = {
   timePeriodHandler,
   buySellHandler,
   startGameHandler,
+  stopGameHandler,
 };
 const mapStateToProps = function(state, ownProps) {
   return {

@@ -9,9 +9,11 @@ import {
   UPDATE_RUNNING_DATA,
   UPDATE_NET_WORTH,
   START_GAME,
+  STOP_GAME,
   TRIGGER_BUY_SELL,
   CHANGE_TIME_PERIOD,
   CHANGE_START_INVESTED,
+  UPDATE_TIMEOUT,
 } from './actionTypes';
 
 const initialState = {
@@ -24,6 +26,7 @@ const initialState = {
   transactionLog: [],
   startInvested: false,
   runningTimeout: false,
+  isPlaying: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -92,9 +95,22 @@ const reducer = (state = initialState, action) => {
         startIndex: action.payload.startIndex,
         transactionLog: transactionLog,
         netWorth: 10000,
+        isPlaying: true,
       };
 
       return { ...state, ...resetState };
+    }
+    case STOP_GAME: {
+      // Reset variables
+      let resetState = {
+        runningTimeout: false,
+        isPlaying: false,
+      };
+
+      return { ...state, ...resetState };
+    }
+    case UPDATE_TIMEOUT: {
+      return { ...state, runningTimeout: action.payload };
     }
     default:
       return state;
