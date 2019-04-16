@@ -53,13 +53,13 @@ class LineChart extends Component {
           pointRadius.push(5);
 
           // Check if buy or sell
-          if (transactionIndex % 2) {
+          if (transactionIndex % 2 === 0) {
             // Buy
             // Odd items in array is even in 0 index
-            pointBackgroundColors.push('#ff1654');
+            pointBackgroundColors.push('#90cd8a');
           } else {
             // Sell
-            pointBackgroundColors.push('#90cd8a');
+            pointBackgroundColors.push('#ff1654');
           }
         } else {
           // No event, hide radius
