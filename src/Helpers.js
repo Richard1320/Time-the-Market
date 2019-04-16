@@ -1,8 +1,3 @@
-export function isEnd(counter, timePeriod) {
-  // Check if game has ended
-  return counter > timePeriod;
-}
-
 export function isHolding(transactionLog) {
   // Every buy and sell is an item in the transaction log
   // Odd number of items in log is holding (bought)

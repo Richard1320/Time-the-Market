@@ -13,17 +13,7 @@ import {
   CHANGE_START_INVESTED,
   UPDATE_TIMEOUT,
 } from './actionTypes';
-import { isEnd, isHolding } from '../Helpers';
-
-function gameTickCallback() {
-  let counter = store.getState().counter;
-  let timePeriod = store.getState().timePeriod;
-  if (isEnd(counter, timePeriod)) {
-  } else {
-    let timeoutID = setTimeout(gameTick, 100);
-    store.dispatch({ type: UPDATE_TIMEOUT, payload: timeoutID });
-  }
-}
+import { isHolding } from '../Helpers';
 
 function gameTick() {
   store.dispatch({ type: ADVANCE_NEW_MONTH });
@@ -31,7 +21,15 @@ function gameTick() {
   let transactionLog = store.getState().transactionLog;
   if (isHolding(transactionLog)) store.dispatch({ type: UPDATE_NET_WORTH });
 
-  gameTickCallback();
+  let counter = store.getState().counter;
+  let timePeriod = store.getState().timePeriod;
+  // Check if game has ended
+  if (counter > timePeriod) {
+    store.dispatch({ type: STOP_GAME });
+  } else {
+    let timeoutID = setTimeout(gameTick, 100);
+    store.dispatch({ type: UPDATE_TIMEOUT, payload: timeoutID });
+  }
 }
 
 export function fetchData() {
