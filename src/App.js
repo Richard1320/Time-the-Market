@@ -7,6 +7,7 @@ import { fetchData } from './redux/actions';
 import LineChart from './components/LineChart.js';
 import Form from './components/Form.js';
 import Summary from './components/Summary.js';
+import Header from './components/Header.js';
 
 class App extends Component {
   componentDidMount() {
@@ -15,6 +16,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Header />
         <Form />
         <div className="container-fluid">
           <div className="row">
