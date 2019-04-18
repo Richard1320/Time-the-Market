@@ -10,6 +10,7 @@ import {
   STOP_GAME,
   TRIGGER_BUY_SELL,
   CHANGE_TIME_PERIOD,
+  CHANGE_GAME_SPEED,
   CHANGE_START_INVESTED,
   UPDATE_TIMEOUT,
 } from './actionTypes';
@@ -27,7 +28,8 @@ function gameTick() {
   if (counter > timePeriod) {
     store.dispatch({ type: STOP_GAME });
   } else {
-    let timeoutID = setTimeout(gameTick, 100);
+    let gameSpeed = 200 / store.getState().gameSpeed;
+    let timeoutID = setTimeout(gameTick, gameSpeed);
     store.dispatch({ type: UPDATE_TIMEOUT, payload: timeoutID });
   }
 }
@@ -83,6 +85,12 @@ export function startInvestedHandler(value) {
 export function timePeriodHandler(value) {
   return {
     type: CHANGE_TIME_PERIOD,
+    payload: value,
+  };
+}
+export function gameSpeedHandler(value) {
+  return {
+    type: CHANGE_GAME_SPEED,
     payload: value,
   };
 }

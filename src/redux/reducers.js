@@ -12,6 +12,7 @@ import {
   STOP_GAME,
   TRIGGER_BUY_SELL,
   CHANGE_TIME_PERIOD,
+  CHANGE_GAME_SPEED,
   CHANGE_START_INVESTED,
   UPDATE_TIMEOUT,
 } from './actionTypes';
@@ -27,12 +28,16 @@ const initialState = {
   startInvested: false,
   runningTimeout: false,
   isPlaying: false,
+  gameSpeed: 1,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_DATA_FULFILLED:
       return { ...state, historicalData: action.payload };
+    case CHANGE_GAME_SPEED:
+      let gameSpeed = parseFloat(action.payload);
+      return { ...state, gameSpeed: gameSpeed };
     case ADVANCE_NEW_MONTH: {
       let counter = state.counter + 1;
       return { ...state, counter: counter };
