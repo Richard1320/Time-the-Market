@@ -16,8 +16,16 @@ class App extends Component {
     return (
       <div className="App">
         <Form />
-        <Summary />
-        <LineChart />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-12 col-lg-8">
+              <LineChart />
+            </div>
+            <div className="col-12 col-lg-4">
+              <Summary />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

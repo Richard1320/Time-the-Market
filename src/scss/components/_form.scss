@@ -1,0 +1,34 @@
+.component--form {
+  text-align: center;
+
+  label {
+    display: block;
+    margin: 0;
+  }
+  button {
+    margin: 0 5px;
+  }
+  .btn--start {
+    background-color: $colorGreen;
+    border-color: $colorGreen;
+    min-width: 65px;
+  }
+  .btn--stop {
+    background-color: $colorRed;
+    border-color: $colorRed;
+
+    &:disabled {
+      border-color: $colorLightGrey;
+      background-color: $colorLightGrey;
+    }
+  }
+  .btn--transaction {
+    background-color: $colorBlue;
+    border-color: $colorBlue;
+
+    &:disabled {
+      border-color: $colorLightGrey;
+      background-color: $colorLightGrey;
+    }
+  }
+}
