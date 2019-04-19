@@ -32,11 +32,10 @@ class Summary extends Component {
       <div className="component--summary">
         <h3>Summary</h3>
         <p>
-          Timing the market net worth: $
-          {this.props.netWorth.toFixed(2).toLocaleString()}
+          Your net worth: ${this.props.netWorth.toFixed(2).toLocaleString()}
         </p>
         <p>
-          Time in market net worth: $
+          Net worth if invested for the entire duration: $
           {this.props.holdNetWorth.toFixed(2).toLocaleString()}
         </p>
         <div className="transaction-log mb-3">
