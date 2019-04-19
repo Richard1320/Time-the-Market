@@ -39,6 +39,15 @@ class Summary extends Component {
         <div className="transaction-log">
           {!this.props.isPlaying ? this.renderTransactions() : ''}
         </div>
+        <h4>Important Assumptions</h4>
+        <ul>
+          <li>
+            This money is in your TFSA or RRSP; no tax will be calculated.
+          </li>
+          <li>Dividends are calculated monthly.</li>
+          <li>Trades are free.</li>
+          <li>Inflation is not calculated.</li>
+        </ul>
       </div>
     );
   }
