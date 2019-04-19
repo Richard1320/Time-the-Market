@@ -4,24 +4,27 @@ import { connect } from 'react-redux';
 class Summary extends Component {
   renderTransactions() {
     let rows = [];
-    this.props.transactionLog.forEach((element, index) => {
-      let key = 'transaction-' + index;
-      let event = '';
-      // Check if buy or sell
-      if (index % 2 === 0) {
-        // Buy
-        // Odd items in array is even in 0 index
-        event = 'Purchased';
-      } else {
-        // Sell
-        event = 'Sold';
-      }
-      rows.push(
-        <div key={key} className="transaction-item">
-          {event}: {element}
-        </div>
-      );
-    });
+    if (this.props.transactionLog.length) {
+      rows.push(<h4>Transactions</h4>);
+      this.props.transactionLog.forEach((element, index) => {
+        let key = 'transaction-' + index;
+        let event = '';
+        // Check if buy or sell
+        if (index % 2 === 0) {
+          // Buy
+          // Odd items in array is even in 0 index
+          event = 'Purchased';
+        } else {
+          // Sell
+          event = 'Sold';
+        }
+        rows.push(
+          <div key={key} className="transaction-item">
+            {event}: {element}
+          </div>
+        );
+      });
+    }
     return rows;
   }
   render() {
@@ -36,7 +39,7 @@ class Summary extends Component {
           Time in market net worth: $
           {this.props.holdNetWorth.toFixed(2).toLocaleString()}
         </p>
-        <div className="transaction-log">
+        <div className="transaction-log mb-3">
           {!this.props.isPlaying ? this.renderTransactions() : ''}
         </div>
         <h4>Important Assumptions</h4>

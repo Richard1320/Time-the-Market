@@ -8,6 +8,7 @@ import LineChart from './components/LineChart.js';
 import Form from './components/Form.js';
 import Summary from './components/Summary.js';
 import Header from './components/Header.js';
+import Footer from './components/Footer.js';
 
 class App extends Component {
   componentDidMount() {
@@ -28,6 +29,7 @@ class App extends Component {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
