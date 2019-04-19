@@ -15,12 +15,20 @@ const initialOptions = {
         ticks: {
           display: false,
         },
+        scaleLabel: {
+          display: false,
+          labelString: 'Date',
+        },
       },
     ],
     yAxes: [
       {
         ticks: {
           display: false,
+        },
+        scaleLabel: {
+          display: false,
+          labelString: 'S&P500 Price',
         },
       },
     ],
@@ -42,6 +50,8 @@ class LineChart extends Component {
       let options = Object.assign({}, this.state.options);
       options.scales.xAxes[0].ticks.display = !this.props.isPlaying;
       options.scales.yAxes[0].ticks.display = !this.props.isPlaying;
+      options.scales.xAxes[0].scaleLabel.display = !this.props.isPlaying;
+      options.scales.yAxes[0].scaleLabel.display = !this.props.isPlaying;
 
       // Redraw chart once to refresh options display
       this.setState({ options: options, redraw: true }, () => {
