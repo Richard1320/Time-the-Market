@@ -8,7 +8,7 @@ let middleware = [thunk];
 if (process.env.NODE_ENV !== 'production') {
   // Be sure to ONLY add this middleware in development!
   middleware = [
-    // require('redux-immutable-state-invariant').default(),
+    require('redux-immutable-state-invariant').default(),
     // logger,
     thunk,
   ];

@@ -14,13 +14,11 @@ import {
   CHANGE_START_INVESTED,
   UPDATE_TIMEOUT,
 } from './actionTypes';
-import { isHolding } from '../Helpers';
 
 function gameTick() {
   store.dispatch({ type: ADVANCE_NEW_MONTH });
   store.dispatch({ type: UPDATE_RUNNING_DATA });
-  let transactionLog = store.getState().transactionLog;
-  if (isHolding(transactionLog)) store.dispatch({ type: UPDATE_NET_WORTH });
+  store.dispatch({ type: UPDATE_NET_WORTH });
 
   let counter = store.getState().counter;
   let timePeriod = store.getState().timePeriod;

@@ -28,7 +28,14 @@ class Summary extends Component {
     return (
       <div className="component--summary">
         <h3>Summary</h3>
-        <p>Value: ${this.props.netWorth.toFixed(2).toLocaleString()}</p>
+        <p>
+          Timing the market net worth: $
+          {this.props.netWorth.toFixed(2).toLocaleString()}
+        </p>
+        <p>
+          Time in market net worth: $
+          {this.props.holdNetWorth.toFixed(2).toLocaleString()}
+        </p>
         <div className="transaction-log">
           {!this.props.isPlaying ? this.renderTransactions() : ''}
         </div>
@@ -45,6 +52,7 @@ const mapStateToProps = function(state, ownProps) {
     isPlaying: state.isPlaying,
     transactionLog: state.transactionLog,
     netWorth: state.netWorth,
+    holdNetWorth: state.holdNetWorth,
   };
 };
 

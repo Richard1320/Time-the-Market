@@ -17,6 +17,8 @@ import {
   UPDATE_TIMEOUT,
 } from './actionTypes';
 
+import { isHolding } from '../Helpers';
+
 const initialState = {
   historicalData: {},
   startIndex: 0,
@@ -24,6 +26,7 @@ const initialState = {
   timePeriod: 120,
   runningData: [],
   netWorth: 10000,
+  holdNetWorth: 10000,
   transactionLog: [],
   startInvested: false,
   runningTimeout: false,
@@ -67,18 +70,26 @@ const reducer = (state = initialState, action) => {
     }
     case UPDATE_NET_WORTH: {
       let netWorth = state.netWorth;
+      let holdNetWorth = state.holdNetWorth;
       let lastTwo = state.runningData.slice(-2);
+      let transactionLog = state.transactionLog;
 
       // Check if running data has at least two months
-      // And this month is not a "buy" month
       if (lastTwo[1]) {
         let lastMonthPrice = lastTwo[0].SP500;
         let thisMonthPrice = lastTwo[1].SP500;
         let gainPercent = (thisMonthPrice - lastMonthPrice) / lastMonthPrice;
+        let monthlyDividend = lastTwo[1].Dividend / 12;
 
-        netWorth = netWorth * (1 + gainPercent);
+        // If holding, update personal net worth
+        if (isHolding(transactionLog)) {
+          netWorth = netWorth * (1 + gainPercent) + monthlyDividend;
+        }
 
-        return { ...state, netWorth: netWorth };
+        // Update amount for just holding
+        holdNetWorth = holdNetWorth * (1 + gainPercent) + monthlyDividend;
+
+        return { ...state, netWorth: netWorth, holdNetWorth: holdNetWorth };
       } else {
         return state;
       }
@@ -100,6 +111,7 @@ const reducer = (state = initialState, action) => {
         startIndex: action.payload.startIndex,
         transactionLog: transactionLog,
         netWorth: 10000,
+        holdNetWorth: 10000,
         isPlaying: true,
       };
 
