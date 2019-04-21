@@ -13,6 +13,7 @@ import {
   CHANGE_GAME_SPEED,
   CHANGE_START_INVESTED,
   UPDATE_TIMEOUT,
+  FETCH_DATA_REQUEST,
 } from './actionTypes';
 
 function gameTick() {
@@ -34,7 +35,8 @@ function gameTick() {
 
 export function fetchData() {
   return dispatch => {
-    axios
+    dispatch(fetchDataRequest());
+    return axios
       .get('/data/historical-sp500.json')
       .then(response => {
         dispatch({ type: FETCH_DATA_FULFILLED, payload: response.data });
@@ -56,6 +58,11 @@ export function startGameHandler() {
     // Add starting month to running data
     dispatch({ type: UPDATE_RUNNING_DATA });
     gameTick();
+  };
+}
+function fetchDataRequest() {
+  return {
+    type: FETCH_DATA_REQUEST,
   };
 }
 export function stopGameHandler() {

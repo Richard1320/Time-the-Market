@@ -20,7 +20,7 @@ import {
 import { isHolding } from '../Helpers';
 
 const initialState = {
-  historicalData: {},
+  historicalData: [],
   startIndex: 0,
   counter: 0,
   timePeriod: 120,
