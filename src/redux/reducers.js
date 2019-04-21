@@ -1,21 +1,8 @@
 // import { combineReducers } from 'redux';
-// import historicalData from './historicalData';
 
 // export default combineReducers({ historicalData });
 
-import {
-  FETCH_DATA_FULFILLED,
-  ADVANCE_NEW_MONTH,
-  UPDATE_RUNNING_DATA,
-  UPDATE_NET_WORTH,
-  START_GAME,
-  STOP_GAME,
-  TRIGGER_BUY_SELL,
-  CHANGE_TIME_PERIOD,
-  CHANGE_GAME_SPEED,
-  CHANGE_START_INVESTED,
-  UPDATE_TIMEOUT,
-} from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 import { isHolding } from '../Helpers';
 
@@ -36,22 +23,22 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_DATA_FULFILLED:
+    case actionTypes.FETCH_DATA_FULFILLED:
       return { ...state, historicalData: action.payload };
-    case CHANGE_GAME_SPEED:
+    case actionTypes.CHANGE_GAME_SPEED:
       let gameSpeed = parseFloat(action.payload);
       return { ...state, gameSpeed: gameSpeed };
-    case ADVANCE_NEW_MONTH: {
+    case actionTypes.ADVANCE_NEW_MONTH: {
       let counter = state.counter + 1;
       return { ...state, counter: counter };
     }
-    case CHANGE_TIME_PERIOD: {
+    case actionTypes.CHANGE_TIME_PERIOD: {
       return { ...state, timePeriod: action.payload };
     }
-    case CHANGE_START_INVESTED: {
+    case actionTypes.CHANGE_START_INVESTED: {
       return { ...state, startInvested: action.payload };
     }
-    case TRIGGER_BUY_SELL: {
+    case actionTypes.TRIGGER_BUY_SELL: {
       let transactionLog = state.transactionLog.slice(0);
       let thisMonthIndex = state.startIndex + state.counter;
       let thisMonthData = state.historicalData[thisMonthIndex];
@@ -61,14 +48,14 @@ const reducer = (state = initialState, action) => {
 
       return { ...state, transactionLog: transactionLog };
     }
-    case UPDATE_RUNNING_DATA: {
+    case actionTypes.UPDATE_RUNNING_DATA: {
       let counter = state.counter;
       let sliceStart = state.startIndex;
       let sliceEnd = state.startIndex + counter;
       let runningData = state.historicalData.slice(sliceStart, sliceEnd);
       return { ...state, runningData: runningData };
     }
-    case UPDATE_NET_WORTH: {
+    case actionTypes.UPDATE_NET_WORTH: {
       let netWorth = state.netWorth;
       let holdNetWorth = state.holdNetWorth;
       let lastTwo = state.runningData.slice(-2);
@@ -94,7 +81,7 @@ const reducer = (state = initialState, action) => {
         return state;
       }
     }
-    case START_GAME: {
+    case actionTypes.START_GAME: {
       // Randomize start index
       let transactionLog = [];
 
@@ -117,7 +104,7 @@ const reducer = (state = initialState, action) => {
 
       return { ...state, ...resetState };
     }
-    case STOP_GAME: {
+    case actionTypes.STOP_GAME: {
       // Reset variables
       let resetState = {
         runningTimeout: false,
@@ -126,7 +113,7 @@ const reducer = (state = initialState, action) => {
 
       return { ...state, ...resetState };
     }
-    case UPDATE_TIMEOUT: {
+    case actionTypes.UPDATE_TIMEOUT: {
       return { ...state, runningTimeout: action.payload };
     }
     default:

@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import expect from 'expect'; // You can use any testing library
 
 import * as actions from './actions';
-import * as types from './actionTypes';
+import * as actionTypes from './actionTypes';
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
@@ -35,8 +35,8 @@ describe('async actions', () => {
     mock.onGet('/data/historical-sp500.json').reply(200, data);
 
     const expectedActions = [
-      { type: types.FETCH_DATA_REQUEST },
-      { type: types.FETCH_DATA_FULFILLED, payload: data },
+      { type: actionTypes.FETCH_DATA_REQUEST },
+      { type: actionTypes.FETCH_DATA_FULFILLED, payload: data },
     ];
     const store = mockStore({ historicalData: [] });
 
