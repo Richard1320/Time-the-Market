@@ -35,3 +35,14 @@ class Footer extends Component {
 }
 
 export default Footer;
+// describe('App component', () => {
+//   ...
+
+//   it('increments count by 1 when the increment button is clicked', () => {
+//     const wrapper = shallow(<App />);
+//     const incrementBtn = wrapper.find('button.increment');
+//     incrementBtn.simulate('click');
+//     const text = wrapper.find('p').text();
+//     expect(text).toEqual('Count: 1');
+//   });
+// });

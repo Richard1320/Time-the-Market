@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-class Summary extends Component {
+export class Summary extends Component {
   renderTransactions() {
     let rows = [];
     if (this.props.transactionLog.length) {
@@ -32,11 +32,20 @@ class Summary extends Component {
       <div className="component--summary">
         <h3>Summary</h3>
         <p>
-          Your net worth: ${this.props.netWorth.toFixed(2).toLocaleString()}
+          Your net worth: $
+          <span className="net-worth-trades">
+            {this.props.netWorth.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}
+          </span>
         </p>
         <p>
           Net worth if invested for the entire duration: $
-          {this.props.holdNetWorth.toFixed(2).toLocaleString()}
+          <span className="net-worth-hold">
+            {this.props.holdNetWorth.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}
+          </span>
         </p>
         <div className="transaction-log mb-3">
           {!this.props.isPlaying ? this.renderTransactions() : ''}
