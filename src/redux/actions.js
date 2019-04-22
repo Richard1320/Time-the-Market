@@ -40,6 +40,7 @@ export function startGameHandler(startIndex) {
   return dispatch => {
     stopGameHandler();
 
+    // Randomize start index if not provided
     if (!startIndex) {
       let count = store.getState().historicalData.length;
       let maxStart = count - store.getState().timePeriod;

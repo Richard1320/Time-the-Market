@@ -46,14 +46,6 @@ describe('actions', () => {
     };
     expect(actions.gameSpeedHandler(value)).toEqual(expectedAction);
   });
-  // it('should create an action to start game', () => {
-  //   const value = 0.5;
-  //   const expectedAction = {
-  //     type: actionTypes.CHANGE_GAME_SPEED,
-  //     payload: value,
-  //   };
-  //   expect(actions.gameSpeedHandler(value)).toEqual(expectedAction);
-  // });
   it('should create an action to stop game', () => {
     const expectedAction = {
       type: actionTypes.STOP_GAME,
@@ -85,5 +77,16 @@ describe('async actions', () => {
       // return of async actions
       expect(store.getActions()).toEqual(expectedActions);
     });
+  });
+  it('should create an action to start game', () => {
+    const startIndex = 20;
+    const expectedActions = [
+      { type: actionTypes.START_GAME, payload: { startIndex: startIndex } },
+      { type: actionTypes.UPDATE_RUNNING_DATA },
+    ];
+    const store = mockStore({});
+    store.dispatch(actions.startGameHandler(startIndex));
+    // return of action creator
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });
