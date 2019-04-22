@@ -9,6 +9,8 @@ import { isHolding } from '../Helpers';
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.RESET_STORE:
+      return initialState;
     case actionTypes.FETCH_DATA_FULFILLED:
       return { ...state, historicalData: action.payload };
     case actionTypes.CHANGE_GAME_SPEED:
@@ -19,7 +21,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, counter: counter };
     }
     case actionTypes.CHANGE_TIME_PERIOD: {
-      return { ...state, timePeriod: action.payload };
+      let timePeriod = parseInt(action.payload);
+      return { ...state, timePeriod: timePeriod };
     }
     case actionTypes.CHANGE_START_INVESTED: {
       return { ...state, startInvested: action.payload };

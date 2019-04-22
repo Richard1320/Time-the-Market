@@ -6,7 +6,6 @@ import expect from 'expect'; // You can use any testing library
 
 import * as actions from './actions';
 import * as actionTypes from './actionTypes';
-import initialState from './initialState';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -93,13 +92,3 @@ describe('async actions', () => {
     expect(store.getActions()).toEqual(expectedActions);
   });
 });
-// describe('full app actions', () => {
-//   it('should start the game and stop the game after 120 iterations', () => {
-//     const store = mockStore(initialState);
-//     jest.useFakeTimers();
-//     actions.startGameHandler();
-//     // Fast-forward until all timers have been executed
-//     jest.runAllTimers();
-//     expect(store.getState().startIndex).not.toEqual(0);
-//   });
-// });
