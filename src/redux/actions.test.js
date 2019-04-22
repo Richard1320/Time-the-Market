@@ -6,6 +6,8 @@ import expect from 'expect'; // You can use any testing library
 
 import * as actions from './actions';
 import * as actionTypes from './actionTypes';
+import initialState from './initialState';
+
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
@@ -55,15 +57,16 @@ describe('actions', () => {
 });
 
 describe('async actions', () => {
-  let mock;
-  afterEach(() => {
-    mock.restore();
-  });
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-  });
+  // let mock;
+  // afterEach(() => {
+  //   mock.restore();
+  // });
+  // beforeEach(() => {
+  //   mock = new MockAdapter(axios);
+  // });
 
   it('creates FETCH_DATA_FULFILLED when fetching data has been done', () => {
+    const mock = new MockAdapter(axios);
     const data = { response: true };
     mock.onGet('/data/historical-sp500.json').reply(200, data);
 
@@ -84,9 +87,19 @@ describe('async actions', () => {
       { type: actionTypes.START_GAME, payload: { startIndex: startIndex } },
       { type: actionTypes.UPDATE_RUNNING_DATA },
     ];
-    const store = mockStore({});
+    const store = mockStore();
     store.dispatch(actions.startGameHandler(startIndex));
     // return of action creator
     expect(store.getActions()).toEqual(expectedActions);
   });
 });
+// describe('full app actions', () => {
+//   it('should start the game and stop the game after 120 iterations', () => {
+//     const store = mockStore(initialState);
+//     jest.useFakeTimers();
+//     actions.startGameHandler();
+//     // Fast-forward until all timers have been executed
+//     jest.runAllTimers();
+//     expect(store.getState().startIndex).not.toEqual(0);
+//   });
+// });
