@@ -9,18 +9,59 @@ import * as actionTypes from './actionTypes';
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-// describe('async actions', () => {
-//   it('returns data when sendMessage is called', done => {
-//     var mock = new MockAdapter(axios);
-//     const data = { response: true };
-//     mock.onGet('/data/historical-sp500.json').reply(200, data);
+describe('actions', () => {
+  it('should create an action to fetch data', () => {
+    const expectedAction = {
+      type: actionTypes.FETCH_DATA_REQUEST,
+    };
+    expect(actions.fetchDataRequest()).toEqual(expectedAction);
+  });
+  it('should create an action to buy / sell', () => {
+    const expectedAction = {
+      type: actionTypes.TRIGGER_BUY_SELL,
+    };
+    expect(actions.buySellHandler()).toEqual(expectedAction);
+  });
+  it('should create an action to update start invested option', () => {
+    const value = true;
+    const expectedAction = {
+      type: actionTypes.CHANGE_START_INVESTED,
+      payload: value,
+    };
+    expect(actions.startInvestedHandler(value)).toEqual(expectedAction);
+  });
+  it('should create an action to update time period', () => {
+    const value = 240;
+    const expectedAction = {
+      type: actionTypes.CHANGE_TIME_PERIOD,
+      payload: value,
+    };
+    expect(actions.timePeriodHandler(value)).toEqual(expectedAction);
+  });
+  it('should create an action to update game speed', () => {
+    const value = 0.5;
+    const expectedAction = {
+      type: actionTypes.CHANGE_GAME_SPEED,
+      payload: value,
+    };
+    expect(actions.gameSpeedHandler(value)).toEqual(expectedAction);
+  });
+  // it('should create an action to start game', () => {
+  //   const value = 0.5;
+  //   const expectedAction = {
+  //     type: actionTypes.CHANGE_GAME_SPEED,
+  //     payload: value,
+  //   };
+  //   expect(actions.gameSpeedHandler(value)).toEqual(expectedAction);
+  // });
+  it('should create an action to stop game', () => {
+    const expectedAction = {
+      type: actionTypes.STOP_GAME,
+    };
+    expect(actions.stopGameHandler()).toEqual(expectedAction);
+  });
+});
 
-//     actions.fetchData().then(response => {
-//       expect(response).toEqual(data);
-//       done();
-//     });
-//   });
-// });
 describe('async actions', () => {
   let mock;
   afterEach(() => {

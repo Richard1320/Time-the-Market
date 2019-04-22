@@ -3,7 +3,7 @@ import store from './store';
 
 import * as actionTypes from './actionTypes';
 
-function gameTick() {
+export function gameTick() {
   store.dispatch({ type: actionTypes.ADVANCE_NEW_MONTH });
   store.dispatch({ type: actionTypes.UPDATE_RUNNING_DATA });
   store.dispatch({ type: actionTypes.UPDATE_NET_WORTH });
@@ -36,13 +36,15 @@ export function fetchData() {
       });
   };
 }
-export function startGameHandler() {
+export function startGameHandler(startIndex) {
   return dispatch => {
     stopGameHandler();
 
-    let count = store.getState().historicalData.length;
-    let maxStart = count - store.getState().timePeriod;
-    let startIndex = Math.floor(Math.random() * Math.floor(maxStart));
+    if (!startIndex) {
+      let count = store.getState().historicalData.length;
+      let maxStart = count - store.getState().timePeriod;
+      startIndex = Math.floor(Math.random() * Math.floor(maxStart));
+    }
 
     dispatch({
       type: actionTypes.START_GAME,
@@ -53,7 +55,7 @@ export function startGameHandler() {
     gameTick();
   };
 }
-function fetchDataRequest() {
+export function fetchDataRequest() {
   return {
     type: actionTypes.FETCH_DATA_REQUEST,
   };
