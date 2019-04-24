@@ -14,4 +14,9 @@ if (process.env.NODE_ENV !== 'production') {
   ];
 }
 
+if (process.env.NODE_ENV === 'test') {
+  // Be sure to ONLY add this middleware in development!
+  middleware = [thunk];
+}
+
 export default createStore(rootReducer, applyMiddleware(...middleware));

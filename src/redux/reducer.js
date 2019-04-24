@@ -10,7 +10,8 @@ import { isHolding } from '../Helpers';
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.RESET_STORE:
-      return initialState;
+      // Reset state but keep historical data
+      return { ...initialState, historicalData: state.historicalData };
     case actionTypes.FETCH_DATA_FULFILLED:
       return { ...state, historicalData: action.payload };
     case actionTypes.CHANGE_GAME_SPEED:

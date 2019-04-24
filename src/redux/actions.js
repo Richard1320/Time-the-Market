@@ -11,7 +11,7 @@ export function gameTick() {
   let counter = store.getState().counter;
   let timePeriod = store.getState().timePeriod;
   // Check if game has ended
-  if (counter > timePeriod) {
+  if (counter >= timePeriod) {
     store.dispatch({ type: actionTypes.STOP_GAME });
   } else {
     let gameSpeed = 200 / store.getState().gameSpeed;
