@@ -12,7 +12,6 @@
     "react-redux": "^6.0.1",
     "react-scripts": "2.1.8",
     "redux": "^4.0.1",
-    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
@@ -31,11 +30,18 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "@types/node": "^12.0.4",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-redux": "^7.0.9",
     "axios-mock-adapter": "^1.16.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "react-test-renderer": "^16.8.6",
     "redux-immutable-state-invariant": "^2.1.0",
-    "redux-mock-store": "^1.5.3"
+    "redux-logger": "^3.0.6",
+    "redux-mock-store": "^1.5.3",
+    "typescript": "^3.5.1"
   }
 }

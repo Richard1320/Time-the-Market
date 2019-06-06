@@ -13,3 +13,18 @@ const initialState = {
   gameSpeed: 1, // Speed between each tick
 };
 export default initialState;
+
+export interface stateTypes {
+  historicalData: Array<any>;
+  startIndex: number;
+  counter: number;
+  timePeriod: number;
+  runningData: Array<any>;
+  netWorth: number;
+  holdNetWorth: number;
+  transactionLog: Array<string>;
+  startInvested: boolean;
+  runningTimeout: boolean;
+  isPlaying: boolean;
+  gameSpeed: number;
+}

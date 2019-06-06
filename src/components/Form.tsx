@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { stateTypes } from '../redux/initialState';
 import {
   startGameHandler,
   stopGameHandler,
@@ -12,27 +13,36 @@ import {
 
 import { isHolding } from '../Helpers';
 
-class Form extends Component {
-  gameSpeedHandler(e) {
+interface MyProps extends stateTypes {
+  gameSpeedHandler: typeof gameSpeedHandler;
+  timePeriodHandler: typeof timePeriodHandler;
+  startInvestedHandler: typeof startInvestedHandler;
+  startGameHandler: typeof startGameHandler;
+  stopGameHandler: typeof stopGameHandler;
+  buySellHandler: typeof buySellHandler;
+}
+
+class Form extends Component<MyProps, {}> {
+  gameSpeedHandler(e: any) {
     let value = e.target.value;
-    this.props.gameSpeedHandler(value);
+    return this.props.gameSpeedHandler(value);
   }
-  timePeriodHandler(e) {
+  timePeriodHandler(e: any) {
     let value = e.target.value;
-    this.props.timePeriodHandler(value);
+    return this.props.timePeriodHandler(value);
   }
-  startInvestedHandler(e) {
+  startInvestedHandler(e: any) {
     let value = e.target.checked;
-    this.props.startInvestedHandler(value);
+    return this.props.startInvestedHandler(value);
   }
   startGameHandler() {
-    this.props.startGameHandler();
+    return this.props.startGameHandler();
   }
   stopGameHandler() {
-    this.props.stopGameHandler();
+    return this.props.stopGameHandler();
   }
   buySellHandler() {
-    this.props.buySellHandler();
+    return this.props.buySellHandler();
   }
   render() {
     return (
@@ -72,7 +82,6 @@ class Form extends Component {
               <input
                 id="input-start-invested"
                 type="checkbox"
-                value={this.props.startInvested}
                 onChange={this.startInvestedHandler.bind(this)}
               />
             </div>
@@ -116,7 +125,7 @@ const mapDispatchToProps = {
   startGameHandler,
   stopGameHandler,
 };
-const mapStateToProps = function(state, ownProps) {
+const mapStateToProps = (state: stateTypes, ownProps: any) => {
   return {
     isPlaying: state.isPlaying,
     startIndex: state.startIndex,

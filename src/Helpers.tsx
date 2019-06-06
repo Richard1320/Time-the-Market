@@ -1,4 +1,4 @@
-export function isHolding(transactionLog) {
+export function isHolding(transactionLog: Array<string>) {
   // Every buy and sell is an item in the transaction log
   // Odd number of items in log is holding (bought)
   // Even number of items in log is waiting (sold)

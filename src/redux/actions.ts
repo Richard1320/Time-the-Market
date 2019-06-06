@@ -2,26 +2,28 @@ import axios from 'axios';
 import store from './store';
 
 import * as actionTypes from './actionTypes';
+import { stateTypes } from './initialState';
 
-export function gameTick() {
+export function gameTick(): any {
   store.dispatch({ type: actionTypes.ADVANCE_NEW_MONTH });
   store.dispatch({ type: actionTypes.UPDATE_RUNNING_DATA });
   store.dispatch({ type: actionTypes.UPDATE_NET_WORTH });
 
-  let counter = store.getState().counter;
-  let timePeriod = store.getState().timePeriod;
+  let state: stateTypes = store.getState();
+  let counter = state.counter;
+  let timePeriod = state.timePeriod;
   // Check if game has ended
   if (counter >= timePeriod) {
     store.dispatch({ type: actionTypes.STOP_GAME });
   } else {
-    let gameSpeed = 200 / store.getState().gameSpeed;
+    let gameSpeed = 200 / state.gameSpeed;
     let timeoutID = setTimeout(gameTick, gameSpeed);
     store.dispatch({ type: actionTypes.UPDATE_TIMEOUT, payload: timeoutID });
   }
 }
 
-export function fetchData() {
-  return dispatch => {
+export function fetchData(): any {
+  return (dispatch: any) => {
     dispatch(fetchDataRequest());
     return axios
       .get('/data/historical-sp500.json')
@@ -36,8 +38,8 @@ export function fetchData() {
       });
   };
 }
-export function startGameHandler(startIndex) {
-  return dispatch => {
+export function startGameHandler(startIndex?: number): any {
+  return (dispatch: any) => {
     stopGameHandler();
 
     // Randomize start index if not provided
@@ -56,12 +58,12 @@ export function startGameHandler(startIndex) {
     gameTick();
   };
 }
-export function fetchDataRequest() {
+export function fetchDataRequest(): any {
   return {
     type: actionTypes.FETCH_DATA_REQUEST,
   };
 }
-export function stopGameHandler() {
+export function stopGameHandler(): any {
   let timeoutID = store.getState().runningTimeout;
 
   if (timeoutID) {
@@ -72,24 +74,24 @@ export function stopGameHandler() {
     type: actionTypes.STOP_GAME,
   };
 }
-export function buySellHandler() {
+export function buySellHandler(): any {
   return {
     type: actionTypes.TRIGGER_BUY_SELL,
   };
 }
-export function startInvestedHandler(value) {
+export function startInvestedHandler(value: number): any {
   return {
     type: actionTypes.CHANGE_START_INVESTED,
     payload: value,
   };
 }
-export function timePeriodHandler(value) {
+export function timePeriodHandler(value: number): any {
   return {
     type: actionTypes.CHANGE_TIME_PERIOD,
     payload: value,
   };
 }
-export function gameSpeedHandler(value) {
+export function gameSpeedHandler(value: number): any {
   return {
     type: actionTypes.CHANGE_GAME_SPEED,
     payload: value,

@@ -3,14 +3,21 @@ import { connect } from 'react-redux';
 
 import './scss/app.scss';
 import { fetchData } from './redux/actions';
+import { stateTypes } from './redux/initialState';
 
-import LineChart from './components/LineChart.js';
-import Form from './components/Form.js';
-import Summary from './components/Summary.js';
-import Header from './components/Header.js';
-import Footer from './components/Footer.js';
+import LineChart from './components/LineChart';
+import Form from './components/Form';
+import Summary from './components/Summary';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
-class App extends Component {
+interface MyProps {
+  fetchData: any;
+}
+
+interface MyState {}
+
+class App extends Component<MyProps, MyState> {
   componentDidMount() {
     this.props.fetchData();
   }
@@ -37,7 +44,7 @@ class App extends Component {
 const mapDispatchToProps = {
   fetchData,
 };
-const mapStateToProps = function(state, ownProps) {
+const mapStateToProps = function(state: stateTypes) {
   return {
     historicalData: state.historicalData,
   };

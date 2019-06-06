@@ -1,4 +1,4 @@
-// import { combineReducers } from 'redux';
+import { Reducer } from 'redux';
 
 // export default combineReducers({ historicalData });
 
@@ -7,7 +7,27 @@ import * as actionTypes from './actionTypes';
 import initialState from './initialState';
 import { isHolding } from '../Helpers';
 
-const reducer = (state = initialState, action) => {
+interface actionInterface {
+  type: string;
+  payload: any;
+}
+interface dataPieceInterface {
+  'Consumer Price Index': number;
+  Date: string;
+  Dividend: number;
+  Earnings: number;
+  'Long Interest Rate': number;
+  PE10: number | null;
+  'Real Dividend': number;
+  'Real Earnings': number;
+  'Real Price': number;
+  SP500: number;
+}
+
+const reducer: Reducer<any, any> = (
+  state = initialState,
+  action: actionInterface
+) => {
   switch (action.type) {
     case actionTypes.RESET_STORE:
       // Reset state but keep historical data
@@ -29,9 +49,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, startInvested: action.payload };
     }
     case actionTypes.TRIGGER_BUY_SELL: {
-      let transactionLog = state.transactionLog.slice(0);
+      let transactionLog: Array<string> = state.transactionLog.slice(0);
       let thisMonthIndex = state.startIndex + state.counter;
-      let thisMonthData = state.historicalData[thisMonthIndex];
+      let thisMonthData: dataPieceInterface =
+        state.historicalData[thisMonthIndex];
       let thisMonthDate = thisMonthData.Date;
 
       transactionLog.push(thisMonthDate);
@@ -48,7 +69,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.UPDATE_NET_WORTH: {
       let netWorth = state.netWorth;
       let holdNetWorth = state.holdNetWorth;
-      let lastTwo = state.runningData.slice(-2);
+      let lastTwo: Array<dataPieceInterface> = state.runningData.slice(-2);
       let transactionLog = state.transactionLog;
 
       // Check if running data has at least two months
@@ -76,9 +97,9 @@ const reducer = (state = initialState, action) => {
       let transactionLog = [];
 
       if (state.startInvested) {
-        transactionLog.push(
-          state.historicalData[action.payload.startIndex].Date
-        );
+        let startItem: dataPieceInterface =
+          state.historicalData[action.payload.startIndex];
+        transactionLog.push(startItem.Date);
       }
 
       // Reset variables

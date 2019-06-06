@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-export class Summary extends Component {
+import { stateTypes } from '../redux/initialState';
+
+export class Summary extends Component<stateTypes, {}> {
   renderTransactions() {
     let rows = [];
     if (this.props.transactionLog.length) {
@@ -67,7 +69,7 @@ export class Summary extends Component {
 // const mapDispatchToProps = {
 //   fetchData,
 // };
-const mapStateToProps = function(state, ownProps) {
+const mapStateToProps = (state: stateTypes, ownProps: any) => {
   return {
     isPlaying: state.isPlaying,
     transactionLog: state.transactionLog,

@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 
+import { stateTypes } from '../redux/initialState';
+
+
 const initialOptions = {
   legend: {
     display: false,
@@ -35,15 +38,20 @@ const initialOptions = {
   },
 };
 
-class LineChart extends Component {
-  constructor() {
-    super();
+interface MyState {
+options: any,
+redraw: boolean
+}
+
+class LineChart extends Component<stateTypes, MyState> {
+  constructor(props: any) {
+    super(props);
     this.state = {
       options: initialOptions,
       redraw: false,
     };
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: any) {
     // Typical usage (don't forget to compare props):
     if (this.props.isPlaying !== prevProps.isPlaying) {
       // Show dates and prices after game is over
@@ -60,10 +68,10 @@ class LineChart extends Component {
     }
   }
   render() {
-    let labels = [];
-    let data = [];
-    let pointRadius = [];
-    let pointBackgroundColors = [];
+    let labels:Array<string> = [];
+    let data:Array<number> = [];
+    let pointRadius:Array<number> = [];
+    let pointBackgroundColors:Array<string> = [];
 
     if (this.props.runningData) {
       this.props.runningData.forEach((element, index) => {
@@ -124,7 +132,7 @@ class LineChart extends Component {
 // const mapDispatchToProps = {
 //   fetchData,
 // };
-const mapStateToProps = function(state, ownProps) {
+const mapStateToProps = (state: stateTypes, ownProps: any) => {
   return {
     runningData: state.runningData,
     transactionLog: state.transactionLog,
