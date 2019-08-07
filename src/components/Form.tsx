@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
-// import {stateTypes} from '../redux/initialState';
+import {stateTypes} from '../redux/initialState';
 import {
     startGameHandler,
     stopGameHandler,
@@ -15,12 +15,11 @@ import {isHolding} from '../Helpers';
 
 const Form: React.FC = () => {
     const dispatch = useDispatch();
-    const isPlaying = useSelector((state: any) => state.isPlaying);
-    const startIndex = useSelector((state: any) => state.startIndex);
-    const gameSpeed = useSelector((state: any) => state.gameSpeed);
-    const timePeriod = useSelector((state: any) => state.timePeriod);
-    // const startInvested = useSelector((state: any) => state.startInvested);
-    const transactionLog = useSelector((state: any) => state.transactionLog);
+    const isPlaying = useSelector((state: stateTypes) => state.isPlaying);
+    const startIndex = useSelector((state: stateTypes) => state.startIndex);
+    const gameSpeed = useSelector((state: stateTypes) => state.gameSpeed);
+    const timePeriod = useSelector((state: stateTypes) => state.timePeriod);
+    const transactionLog = useSelector((state: stateTypes) => state.transactionLog);
 
     return (
         <div className="component--form">
@@ -32,8 +31,8 @@ const Form: React.FC = () => {
                             id="input-game-speed"
                             value={gameSpeed}
                             disabled={isPlaying}
-                            onChange={(e: any) => {
-                                dispatch(gameSpeedHandler(e.target.value))
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                dispatch(gameSpeedHandler(parseInt(e.target.value)))
                             }}
                         >
                             <option value="0.25">0.25x</option>
@@ -48,8 +47,8 @@ const Form: React.FC = () => {
                             id="input-time-period"
                             value={timePeriod}
                             disabled={isPlaying}
-                            onChange={(e: any) => {
-                                dispatch(timePeriodHandler(e.target.value))
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                dispatch(timePeriodHandler(parseInt(e.target.value)))
                             }}
                         >
                             <option value="120">10 Years</option>
@@ -63,7 +62,7 @@ const Form: React.FC = () => {
                         <input
                             id="input-start-invested"
                             type="checkbox"
-                            onChange={(e: any) => {
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 dispatch(startInvestedHandler(e.target.checked))
                             }}
                         />

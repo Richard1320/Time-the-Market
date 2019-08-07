@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Line} from 'react-chartjs-2';
-
-import {IDataPoint} from '../redux/initialState';
 import {useSelector} from "react-redux";
 
+import {IDataPoint, stateTypes} from '../redux/initialState';
 
 const initialOptions = {
     legend: {
@@ -39,15 +38,15 @@ const initialOptions = {
 };
 
 const LineChart: React.FC = () => {
-    const isPlaying = useSelector((state: any) => state.isPlaying);
-    const transactionLog = useSelector((state: any) => state.transactionLog);
-    const runningData = useSelector((state: any) => state.runningData);
+    const isPlaying = useSelector((state: stateTypes) => state.isPlaying);
+    const transactionLog = useSelector((state: stateTypes) => state.transactionLog);
+    const runningData = useSelector((state: stateTypes) => state.runningData);
     const [options, setOptions] = useState(initialOptions);
     const [redraw, setRedraw] = useState(false);
-    let labels: Array<string> = [];
-    let data: Array<number> = [];
-    let pointRadius: Array<number> = [];
-    let pointBackgroundColors: Array<string> = [];
+    let labels: string[] = [];
+    let data: number[] = [];
+    let pointRadius: number[] = [];
+    let pointBackgroundColors: string[] = [];
 
     useEffect(() => {
         // Show dates and prices after game is over

@@ -7,14 +7,14 @@ import * as actionTypes from './actionTypes';
 import initialState, {IDataPoint} from './initialState';
 import {isHolding} from '../Helpers';
 
-interface actionInterface {
+interface IActions {
     type: string;
-    payload: any;
+    payload?: any;
 }
 
-const reducer: Reducer<any, any> = (
+const reducer: Reducer = (
     state = initialState,
-    action: actionInterface
+    action: IActions
 ) => {
     switch (action.type) {
         case actionTypes.RESET_STORE:

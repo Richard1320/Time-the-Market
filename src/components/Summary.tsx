@@ -1,11 +1,12 @@
 import React from 'react';
 import {useSelector} from "react-redux";
+import {stateTypes} from "../redux/initialState";
 
 const Summary: React.FC = () => {
-    const isPlaying = useSelector((state: any) => state.isPlaying);
-    const transactionLog = useSelector((state: any) => state.transactionLog);
-    const netWorth = useSelector((state: any) => state.netWorth);
-    const holdNetWorth = useSelector((state: any) => state.holdNetWorth);
+    const isPlaying = useSelector((state: stateTypes) => state.isPlaying);
+    const transactionLog = useSelector((state: stateTypes) => state.transactionLog);
+    const netWorth = useSelector((state: stateTypes) => state.netWorth);
+    const holdNetWorth = useSelector((state: stateTypes) => state.holdNetWorth);
 
     const renderTransactions = () => {
         let rows = [];
