@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 
 import './scss/app.scss';
-import { fetchData } from './redux/actions';
-import { stateTypes } from './redux/initialState';
+import {fetchData} from './redux/actions';
 
 import LineChart from './components/LineChart';
 import Form from './components/Form';
@@ -11,46 +10,31 @@ import Summary from './components/Summary';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
-interface MyProps {
-  fetchData: any;
-}
+const App: React.FC = () => {
+    const dispatch = useDispatch();
 
-interface MyState {}
+    useEffect(() => {
+        dispatch(fetchData());
+    }, [dispatch]);
 
-class App extends Component<MyProps, MyState> {
-  componentDidMount() {
-    this.props.fetchData();
-  }
-  render() {
     return (
-      <div className="App">
-        <Header />
-        <Form />
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-12 col-lg-8">
-              <LineChart />
+        <div className="App">
+            <Header/>
+            <Form/>
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-12 col-lg-8">
+                        <LineChart/>
+                    </div>
+                    <div className="col-12 col-lg-4">
+                        <Summary/>
+                    </div>
+                </div>
             </div>
-            <div className="col-12 col-lg-4">
-              <Summary />
-            </div>
-          </div>
+            <Footer/>
         </div>
-        <Footer />
-      </div>
     );
-  }
-}
-const mapDispatchToProps = {
-  fetchData,
-};
-const mapStateToProps = function(state: stateTypes) {
-  return {
-    historicalData: state.historicalData,
-  };
+
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default App;

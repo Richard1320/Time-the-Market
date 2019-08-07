@@ -79,7 +79,8 @@ export function buySellHandler(): any {
     type: actionTypes.TRIGGER_BUY_SELL,
   };
 }
-export function startInvestedHandler(value: number): any {
+
+export function startInvestedHandler(value: boolean): any {
   return {
     type: actionTypes.CHANGE_START_INVESTED,
     payload: value,
