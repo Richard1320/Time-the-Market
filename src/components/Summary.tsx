@@ -8,7 +8,7 @@ const Summary: React.FC = () => {
     const netWorth = useSelector((state: stateTypes) => state.netWorth);
     const holdNetWorth = useSelector((state: stateTypes) => state.holdNetWorth);
 
-    const renderTransactions = () => {
+	function renderTransactions() {
         let rows = [];
         if (transactionLog.length) {
             rows.push(<h4 key="transaction-title">Transactions</h4>);
@@ -32,7 +32,7 @@ const Summary: React.FC = () => {
             });
         }
         return rows;
-    };
+	}
     return (
         <div className="component--summary">
             <h3>Summary</h3>
