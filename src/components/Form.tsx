@@ -3,12 +3,12 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {stateTypes} from '../redux/initialState';
 import {
-    startGameHandler,
-    stopGameHandler,
     buySellHandler,
     gameSpeedHandler,
-    timePeriodHandler,
+    startGameHandler,
     startInvestedHandler,
+    stopGameHandler,
+    timePeriodHandler,
 } from '../redux/actions';
 
 import {isHolding} from '../Helpers';
