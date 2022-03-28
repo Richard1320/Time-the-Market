@@ -1,0 +1,21 @@
+version: '3'
+
+networks:
+  web:
+    external: true
+  internal:
+    external: false
+
+services:
+  website:
+    container_name: timethemarket-website-prod
+    labels:
+      - traefik.http.routers.timethemarket-website.rule=Host(`timethemarket.magicmediamuse.com`)
+      - traefik.http.routers.timethemarket-website.tls=true
+      - traefik.http.routers.timethemarket-website.tls.certresolver=lets-encrypt
+      - traefik.port=80
+    networks:
+      - internal
+      - web
+    build: Dockerfile
+    image: timethemarket/website
