@@ -1,39 +1,54 @@
 import React, {useEffect, useState} from 'react';
 import {Line} from 'react-chartjs-2';
 import {useSelector} from "react-redux";
-
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    ChartOptions,
+} from 'chart.js';
 import {IDataPoint, stateTypes} from '../redux/initialState';
+import cloneDeep from 'lodash.clonedeep';
 
-const initialOptions = {
-    legend: {
-        display: false,
-    },
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+);
+
+const initialOptions: ChartOptions<"line"> = {
+    // responsive:true,
+    animation: false,
     scales: {
-        xAxes: [
-            {
-                gridLines: {
-                    display: false,
-                },
-                ticks: {
-                    display: false,
-                },
-                scaleLabel: {
-                    display: false,
-                    labelString: 'Date',
-                },
+        x: {
+            ticks: {
+                display: false,
             },
-        ],
-        yAxes: [
-            {
-                ticks: {
-                    display: false,
-                },
-                scaleLabel: {
-                    display: false,
-                    labelString: 'S&P500 Price',
-                },
+            title: {
+                display: true,
+                text: "Date",
             },
-        ],
+            grid: {
+                display: false,
+            },
+        },
+        y: {
+            ticks: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: "S&P500 Price",
+            },
+            // suggestedMin: 0,
+        },
     },
 };
 
@@ -41,8 +56,8 @@ const LineChart: React.FC = () => {
     const isPlaying = useSelector((state: stateTypes) => state.isPlaying);
     const transactionLog = useSelector((state: stateTypes) => state.transactionLog);
     const runningData = useSelector((state: stateTypes) => state.runningData);
-    const [options, setOptions] = useState(initialOptions);
-    const [redraw, setRedraw] = useState(false);
+    const [options, setOptions] = useState<ChartOptions<"line">>(initialOptions);
+    const [redraw, setRedraw] = useState<boolean>(false);
     let labels: string[] = [];
     let data: number[] = [];
     let pointRadius: number[] = [];
@@ -50,11 +65,11 @@ const LineChart: React.FC = () => {
 
     useEffect(() => {
         // Show dates and prices after game is over
-        let newOptions = Object.assign({}, options);
-        newOptions.scales.xAxes[0].ticks.display = !isPlaying;
-        newOptions.scales.yAxes[0].ticks.display = !isPlaying;
-        newOptions.scales.xAxes[0].scaleLabel.display = !isPlaying;
-        newOptions.scales.yAxes[0].scaleLabel.display = !isPlaying;
+        const newOptions: ChartOptions<"line"> = cloneDeep(options);
+        // @ts-ignore
+        newOptions.scales.x.ticks.display = !isPlaying;
+        // @ts-ignore
+        newOptions.scales.y.ticks.display = !isPlaying;
 
         // Redraw chart once to refresh options display
         setOptions(newOptions);
@@ -86,7 +101,7 @@ const LineChart: React.FC = () => {
                     pointBackgroundColors.push('#90cd8a');
                 } else {
                     // Sell
-                    pointBackgroundColors.push('#ff1654');
+                    pointBackgroundColors.push('#1645ff');
                 }
             } else {
                 // No event, hide radius
