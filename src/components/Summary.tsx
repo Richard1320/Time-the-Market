@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useSelector} from "react-redux";
 import {stateTypes} from "../redux/initialState";
 
@@ -8,12 +8,11 @@ const Summary: React.FC = () => {
 	const netWorth = useSelector((state: stateTypes) => state.netWorth);
 	const holdNetWorth = useSelector((state: stateTypes) => state.holdNetWorth);
 
-	function renderTransactions() {
-		let rows = [];
+	const transactions = useMemo(() => {
+		const rows = [];
 		if (transactionLog.length) {
 			rows.push(<h4 key="transaction-title">Transactions</h4>);
 			transactionLog.forEach((element: string, index: number) => {
-				let key = 'transaction-' + index;
 				let event = '';
 				// Check if buy or sell
 				if (index % 2 === 0) {
@@ -25,17 +24,18 @@ const Summary: React.FC = () => {
 					event = 'Sold';
 				}
 				rows.push(
-					<div key={key} className="transaction-item">
+					<div key={`transaction-${index}`} className="transaction-item">
 						{event}: {element}
 					</div>
 				);
 			});
 		}
 		return rows;
-	}
+	},[transactionLog]);
 
 	function localeString(number: number): string {
 		return number.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		});
 	}
@@ -56,7 +56,7 @@ const Summary: React.FC = () => {
 				</span>
 			</p>
 			<div className="transaction-log mb-3">
-				{!isPlaying ? renderTransactions() : ''}
+				{!isPlaying ? transactions : ''}
 			</div>
 			<h4>Important Assumptions</h4>
 			<ul>

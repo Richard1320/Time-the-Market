@@ -11,10 +11,13 @@ import {
     timePeriodHandler,
 } from '../redux/actions';
 
+import {AppDispatch} from '../redux/store';
 import {isHolding} from '../Helpers';
 
 const Form: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
+    const hasData = useSelector((state: stateTypes) => state.historicalData.length > 0);
+    const fetchError = useSelector((state: stateTypes) => state.fetchError);
     const isPlaying = useSelector((state: stateTypes) => state.isPlaying);
     const startIndex = useSelector((state: stateTypes) => state.startIndex);
     const gameSpeed = useSelector((state: stateTypes) => state.gameSpeed);
@@ -24,15 +27,20 @@ const Form: React.FC = () => {
     return (
         <div className="component--form">
             <div className="container">
+                {fetchError && (
+                    <div className="alert theme-danger mb-3" role="alert">
+                        {fetchError}
+                    </div>
+                )}
                 <div className="row">
-                    <div className="col-12 col-md-3 p-3">
+                    <div className="col-12 md:col-3 p-3">
                         <label htmlFor="input-game-speed">Game Speed</label>
                         <select
                             id="input-game-speed"
                             value={gameSpeed}
                             disabled={isPlaying}
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                dispatch(gameSpeedHandler(parseInt(e.target.value)))
+                                dispatch(gameSpeedHandler(Number(e.target.value)))
                             }}
                         >
                             <option value="0.25">0.25x</option>
@@ -41,7 +49,7 @@ const Form: React.FC = () => {
                             <option value="2">2x</option>
                         </select>
                     </div>
-                    <div className="col-12 col-md-3 p-3">
+                    <div className="col-12 md:col-3 p-3">
                         <label htmlFor="input-time-period">Time Period</label>
                         <select
                             id="input-time-period"
@@ -57,7 +65,7 @@ const Form: React.FC = () => {
                             <option value="480">40 Years</option>
                         </select>
                     </div>
-                    <div className="col-12 col-md-3 p-3">
+                    <div className="col-12 md:col-3 p-3">
                         <label htmlFor="input-start-invested">Start Invested</label>
                         <input
                             id="input-start-invested"
@@ -67,10 +75,11 @@ const Form: React.FC = () => {
                             }}
                         />
                     </div>
-                    <div className="col-12 col-md-3 p-3">
+                    <div className="col-12 md:col-3 p-3">
                         <button
                             type="button"
                             className="btn--start"
+                            disabled={!hasData}
                             onClick={() => {
                                 dispatch(startGameHandler())
                             }}

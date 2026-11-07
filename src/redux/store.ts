@@ -1,22 +1,21 @@
-import {applyMiddleware, createStore} from 'redux';
-import thunk from 'redux-thunk';
+import {UnknownAction, applyMiddleware, createStore, Middleware} from 'redux';
+import {thunk, ThunkDispatch} from 'redux-thunk';
+import immutableStateInvariant from 'redux-immutable-state-invariant';
 import rootReducer from './reducer';
 // import logger from 'redux-logger';
 
-let middleware = [thunk];
+export type AppDispatch = ThunkDispatch<any, void, UnknownAction>;
 
-if (process.env.NODE_ENV !== 'production') {
+let middleware: Middleware[] = [thunk];
+
+if (import.meta.env.DEV && import.meta.env.MODE !== 'test') {
 	// Be sure to ONLY add this middleware in development!
 	middleware = [
-		require('redux-immutable-state-invariant').default(),
+		// CommonJS package that only sets exports.default
+		immutableStateInvariant.default(),
 		// logger,
 		thunk,
 	];
-}
-
-if (process.env.NODE_ENV === 'test') {
-	// Be sure to ONLY add this middleware in development!
-	middleware = [thunk];
 }
 
 export default createStore(rootReducer, applyMiddleware(...middleware));

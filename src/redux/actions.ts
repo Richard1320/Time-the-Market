@@ -1,59 +1,64 @@
-import axios from 'axios';
 import store from './store';
 
 import * as actionTypes from './actionTypes';
 import {stateTypes} from './initialState';
 import {ThunkAction} from "redux-thunk";
-import {AnyAction} from "redux";
+import {UnknownAction} from "redux";
 
-interface IActions {
+type IActions<T = any> = {
 	type: string;
-	payload?: any;
-}
+	payload?: T;
+};
+
+export const FETCH_ERROR_MESSAGE =
+	'Unable to load S&P 500 data. Please refresh the page to try again.';
 
 export function gameTick(): void {
 	store.dispatch({type: actionTypes.ADVANCE_NEW_MONTH});
 	store.dispatch({type: actionTypes.UPDATE_RUNNING_DATA});
 	store.dispatch({type: actionTypes.UPDATE_NET_WORTH});
 
-	let state: stateTypes = store.getState();
-	let counter = state.counter;
-	let timePeriod = state.timePeriod;
+	const state: stateTypes = store.getState();
+	const counter = state.counter;
+	const timePeriod = state.timePeriod;
 	// Check if game has ended
 	if (counter >= timePeriod) {
 		store.dispatch({type: actionTypes.STOP_GAME});
 	} else {
-		let gameSpeed = 200 / state.gameSpeed;
-		let timeoutID = setTimeout(gameTick, gameSpeed);
+		const gameSpeed = 200 / state.gameSpeed;
+		const timeoutID = setTimeout(gameTick, gameSpeed);
 		store.dispatch({type: actionTypes.UPDATE_TIMEOUT, payload: timeoutID});
 	}
 }
 
-export function fetchData(): ThunkAction<void, any, void, AnyAction> {
-	return (dispatch: any) => {
+export function fetchData(): ThunkAction<void, any, void, UnknownAction> {
+	return async (dispatch) => {
 		dispatch(fetchDataRequest());
-		return axios
-			.get('/data/historical-sp500.json')
-			.then(response => {
-				dispatch({
-					type: actionTypes.FETCH_DATA_FULFILLED,
-					payload: response.data,
-				});
-			})
-			.catch(err => {
-				console.error(err);
+		try {
+			const response = await fetch('/data/historical-sp500.json');
+			if (!response.ok) {
+				throw new Error(`Failed to fetch data: ${response.status}`);
+			}
+			const data = await response.json();
+			dispatch({
+				type: actionTypes.FETCH_DATA_FULFILLED,
+				payload: data,
 			});
+		} catch (err) {
+			console.error(err);
+			dispatch(fetchDataFailed());
+		}
 	};
 }
 
-export function startGameHandler(startIndex?: number): ThunkAction<void, any, void, AnyAction> {
-	return (dispatch: any) => {
+export function startGameHandler(startIndex?: number): ThunkAction<void, any, void, UnknownAction> {
+	return (dispatch) => {
 		stopGameHandler();
 
 		// Randomize start index if not provided
 		if (!startIndex) {
-			let count = store.getState().historicalData.length;
-			let maxStart = count - store.getState().timePeriod;
+			const count = store.getState().historicalData.length;
+			const maxStart = count - store.getState().timePeriod;
 			startIndex = Math.floor(Math.random() * Math.floor(maxStart));
 		}
 
@@ -67,14 +72,21 @@ export function startGameHandler(startIndex?: number): ThunkAction<void, any, vo
 	};
 }
 
-export function fetchDataRequest(): IActions {
+export function fetchDataRequest(): IActions<void> {
 	return {
 		type: actionTypes.FETCH_DATA_REQUEST,
 	};
 }
 
-export function stopGameHandler(): IActions {
-	let timeoutID = store.getState().runningTimeout;
+export function fetchDataFailed(): IActions<string> {
+	return {
+		type: actionTypes.FETCH_DATA_FAILED,
+		payload: FETCH_ERROR_MESSAGE,
+	};
+}
+
+export function stopGameHandler(): IActions<void> {
+	const timeoutID = store.getState().runningTimeout;
 
 	if (timeoutID) {
 		clearTimeout(timeoutID);
@@ -85,27 +97,27 @@ export function stopGameHandler(): IActions {
 	};
 }
 
-export function buySellHandler(): IActions {
+export function buySellHandler(): IActions<void> {
 	return {
 		type: actionTypes.TRIGGER_BUY_SELL,
 	};
 }
 
-export function startInvestedHandler(value: boolean): IActions {
+export function startInvestedHandler(value: boolean): IActions<boolean> {
 	return {
 		type: actionTypes.CHANGE_START_INVESTED,
 		payload: value,
 	};
 }
 
-export function timePeriodHandler(value: number): IActions {
+export function timePeriodHandler(value: number): IActions<number> {
 	return {
 		type: actionTypes.CHANGE_TIME_PERIOD,
 		payload: value,
 	};
 }
 
-export function gameSpeedHandler(value: number): IActions {
+export function gameSpeedHandler(value: number): IActions<number> {
 	return {
 		type: actionTypes.CHANGE_GAME_SPEED,
 		payload: value,

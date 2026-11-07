@@ -8,6 +8,24 @@ describe('reducer', () => {
 		expect(reducer(undefined, {})).toEqual(initialState);
 	});
 
+	it('should handle FETCH_DATA_FAILED', () => {
+		expect(
+			reducer(undefined, {
+				type: actionTypes.FETCH_DATA_FAILED,
+				payload: 'Failed',
+			}).fetchError
+		).toEqual('Failed');
+	});
+
+	it('should clear the fetch error on FETCH_DATA_REQUEST', () => {
+		expect(
+			reducer(
+				{...initialState, fetchError: 'Failed'},
+				{type: actionTypes.FETCH_DATA_REQUEST}
+			).fetchError
+		).toBeNull();
+	});
+
 	it('should handle CHANGE_GAME_SPEED', () => {
 		expect(
 			reducer(undefined, {
@@ -42,34 +60,6 @@ describe('reducer', () => {
 			})
 		).toEqual({...initialState, startInvested: true});
 	});
-	// it('should handle TRIGGER_BUY_SELL', () => {
-	//   expect(
-	//     reducer(undefined, {
-	//       type: actionTypes.TRIGGER_BUY_SELL,
-	//     })
-	//   ).toEqual({ ...initialState, counter: 1 });
-	// });
-	// it('should handle UPDATE_RUNNING_DATA', () => {
-	//   expect(
-	//     reducer(undefined, {
-	//       type: actionTypes.TRIGGER_BUY_SELL,
-	//     })
-	//   ).toEqual({ ...initialState, counter: 1 });
-	// });
-	// it('should handle UPDATE_NET_WORTH', () => {
-	//   expect(
-	//     reducer(undefined, {
-	//       type: actionTypes.TRIGGER_BUY_SELL,
-	//     })
-	//   ).toEqual({ ...initialState, counter: 1 });
-	// });
-	// it('should handle START_GAME', () => {
-	//   expect(
-	//     reducer(undefined, {
-	//       type: actionTypes.TRIGGER_BUY_SELL,
-	//     })
-	//   ).toEqual({ ...initialState, counter: 1 });
-	// });
 
 	it('should handle STOP_GAME', () => {
 		expect(

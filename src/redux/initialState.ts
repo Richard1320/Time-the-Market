@@ -13,6 +13,7 @@ export interface IDataPoint {
 
 export interface stateTypes {
 	historicalData: IDataPoint[];
+	fetchError: string | null;
 	startIndex: number;
 	counter: number;
 	timePeriod: number;
@@ -28,6 +29,7 @@ export interface stateTypes {
 
 const initialState = {
 	historicalData: [], // All data retrieved from API
+	fetchError: null, // Message to show if data could not be loaded
 	startIndex: 0, // App running start point in historical data
 	counter: 0, // Number of times app has ticked
 	timePeriod: 120, // Maximum number of ticks

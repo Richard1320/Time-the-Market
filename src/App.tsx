@@ -3,6 +3,7 @@ import {useDispatch} from 'react-redux';
 
 import './scss/app.scss';
 import {fetchData} from './redux/actions';
+import {AppDispatch} from './redux/store';
 
 import LineChart from './components/LineChart';
 import Form from './components/Form';
@@ -11,7 +12,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 
 const App: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         dispatch(fetchData());
@@ -23,10 +24,10 @@ const App: React.FC = () => {
             <Form/>
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-12 col-lg-8">
+                    <div className="col-12 lg:col-8">
                         <LineChart/>
                     </div>
-                    <div className="col-12 col-lg-4">
+                    <div className="col-12 lg:col-4">
                         <Summary/>
                     </div>
                 </div>

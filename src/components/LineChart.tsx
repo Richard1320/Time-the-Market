@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Line} from 'react-chartjs-2';
 import {useSelector} from "react-redux";
 import {
@@ -58,10 +58,6 @@ const LineChart: React.FC = () => {
     const runningData = useSelector((state: stateTypes) => state.runningData);
     const [options, setOptions] = useState<ChartOptions<"line">>(initialOptions);
     const [redraw, setRedraw] = useState<boolean>(false);
-    let labels: string[] = [];
-    let data: number[] = [];
-    let pointRadius: number[] = [];
-    let pointBackgroundColors: string[] = [];
 
     useEffect(() => {
         // Show dates and prices after game is over
@@ -83,49 +79,57 @@ const LineChart: React.FC = () => {
         setRedraw(false);
     }, [redraw]);
 
-    if (runningData) {
-        runningData.forEach((element: IDataPoint) => {
-            let date = element.Date;
-            let price = element.SP500;
-            let transactionIndex = transactionLog.indexOf(date);
+    const chartData = useMemo(() => {
+        const labels: string[] = [];
+        const data: number[] = [];
+        const pointRadius: number[] = [];
+        const pointBackgroundColors: string[] = [];
 
-            // Check if this month has a buy or sell event
-            if (transactionIndex !== -1) {
-                // Add a point on chart
-                pointRadius.push(5);
+        if (runningData) {
+            runningData.forEach((element: IDataPoint) => {
+                const date = element.Date;
+                const price = element.SP500;
+                const transactionIndex = transactionLog.indexOf(date);
 
-                // Check if buy or sell
-                if (transactionIndex % 2 === 0) {
-                    // Buy
-                    // Odd items in array is even in 0 index
-                    pointBackgroundColors.push('#90cd8a');
+                // Check if this month has a buy or sell event
+                if (transactionIndex !== -1) {
+                    // Add a point on chart
+                    pointRadius.push(5);
+
+                    // Check if buy or sell
+                    if (transactionIndex % 2 === 0) {
+                        // Buy
+                        // Odd items in array is even in 0 index
+                        pointBackgroundColors.push('#90cd8a');
+                    } else {
+                        // Sell
+                        pointBackgroundColors.push('#1645ff');
+                    }
                 } else {
-                    // Sell
-                    pointBackgroundColors.push('#1645ff');
+                    // No event, hide radius
+                    pointRadius.push(0);
+                    pointBackgroundColors.push('#ccc');
                 }
-            } else {
-                // No event, hide radius
-                pointRadius.push(0);
-                pointBackgroundColors.push('#000');
-            }
-            labels.push(date);
-            data.push(price);
-        });
-    }
+                labels.push(date);
+                data.push(price);
+            });
+        }
 
-    let chartData = {
-        labels: labels,
-        datasets: [
-            {
-                data: data,
-                // borderColor: '#f00',
-                borderWidth: 2,
-                radius: pointRadius,
-                lineTension: 0,
-                pointBackgroundColor: pointBackgroundColors,
-            },
-        ],
-    };
+        return {
+            labels: labels,
+            datasets: [
+                {
+                    data: data,
+                    borderColor: '#ccc',
+                    borderWidth: 2,
+                    radius: pointRadius,
+                    lineTension: 0,
+                    pointBackgroundColor: pointBackgroundColors,
+                },
+            ],
+        };
+
+    },[runningData]);
 
     return (
         <div className="component--line-chart">

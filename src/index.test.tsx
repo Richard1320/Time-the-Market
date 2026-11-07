@@ -2,30 +2,17 @@ import React from 'react';
 import App from './App';
 import {Provider} from 'react-redux';
 import store from './redux/store';
-import {mount} from 'enzyme';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import {act, fireEvent, render, screen} from '@testing-library/react';
+import {vi} from 'vitest';
 
-import {RESET_STORE} from './redux/actionTypes';
+import {FETCH_DATA_FULFILLED, RESET_STORE} from './redux/actionTypes';
+import {FETCH_ERROR_MESSAGE} from './redux/actions';
 import {IDataPoint} from "./redux/initialState";
-
-/* Async function that will finish execution after all promises have been finished
- * Usage:
- *   it('...', async () =. {
- *     // mount component
- *     // execute actions
- *     await flushAllPromises();
- *     // execute assertions for async actions
- *   });
- */
-// export function flushAllPromises() {
-//   return new Promise(resolve => setImmediate(resolve));
-// }
 
 export function generateMockData(limit?: number) {
     if (!limit) limit = 1000;
 
-    let data = [];
+    const data = [];
     for (let i = 1; i <= limit; i++) {
         data.push({
             'Consumer Price Index': i,
@@ -44,42 +31,78 @@ export function generateMockData(limit?: number) {
 }
 
 describe('integration testing', () => {
-    const mock = new MockAdapter(axios);
-    const data = generateMockData();
-    mock.onGet('/data/historical-sp500.json').reply(200, data);
-    const wrapper = mount(
-        <Provider store={store}>
-            <App/>
-        </Provider>
-    );
-    // beforeAll(() => {
-    //   process.env.NODE_ENV = 'production';
-    // });
-    // beforeEach(() => {
-    // });
-    afterEach(() => {
-        store.dispatch({type: RESET_STORE});
+    const data = JSON.stringify(generateMockData());
+
+    beforeEach(() => {
+        // A Response body can only be read once, so build one per request
+        vi.stubGlobal('fetch', vi.fn(async () => new Response(data)));
     });
 
-    it('should render a h1', () => {
-        // expect(wrapper.find('div.dog-placeholder').text()).toEqual('No dog loaded yet. Get some!');
-        expect(wrapper.find('h1')).toBeDefined();
+    afterEach(() => {
+        vi.unstubAllGlobals();
+        vi.useRealTimers();
+        act(() => {
+            store.dispatch({type: RESET_STORE});
+        });
     });
-    it('should change time period on input change', () => {
-        const input = wrapper.find('#input-time-period');
-        input.simulate('change', {target: {value: '320'}});
+
+    async function renderApp() {
+        const view = render(
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        );
+        // Let the fetch dispatched on mount finish
+        await act(async () => {
+            await vi.waitFor(() => {
+                expect(store.getState().historicalData.length).toBeGreaterThan(0);
+            });
+        });
+        return view;
+    }
+
+    it('should show no error and enable start once data has loaded', async () => {
+        const {container} = await renderApp();
+        expect(screen.queryByRole('alert')).toBeNull();
+        expect(container.querySelector<HTMLButtonElement>('.btn--start')!.disabled).toEqual(false);
+    });
+    it('should show an error and disable start when data fails to load', async () => {
+        vi.spyOn(console, 'error').mockImplementationOnce(() => {});
+        vi.stubGlobal('fetch', vi.fn(async () => new Response('', {status: 500})));
+        // historicalData survives RESET_STORE, so clear what earlier tests loaded
+        store.dispatch({type: FETCH_DATA_FULFILLED, payload: []});
+
+        const {container} = render(
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        );
+
+        expect((await screen.findByRole('alert')).textContent).toEqual(FETCH_ERROR_MESSAGE);
+        expect(container.querySelector<HTMLButtonElement>('.btn--start')!.disabled).toEqual(true);
+    });
+    it('should render a h1', async () => {
+        const {container} = await renderApp();
+        expect(container.querySelector('h1')).not.toBeNull();
+    });
+    it('should change time period on input change', async () => {
+        const {container} = await renderApp();
+        const input = container.querySelector('#input-time-period')!;
+        fireEvent.change(input, {target: {value: '320'}});
         expect(store.getState().timePeriod).toEqual(320);
     });
     it('should load data from json file', async () => {
+        await renderApp();
         expect(store.getState().historicalData.length).toEqual(1000);
     });
     it('should start the game and stop the game after 120 iterations', async () => {
-        // await flushAllPromises();
-        const button = wrapper.find('.btn--start');
-        jest.useFakeTimers();
-        button.simulate('click');
+        const {container} = await renderApp();
+        vi.useFakeTimers();
+        fireEvent.click(container.querySelector('.btn--start')!);
         // Fast-forward until all timers have been executed
-        jest.runAllTimers();
+        act(() => {
+            vi.runAllTimers();
+        });
         expect(store.getState().runningData.length).toEqual(120);
     });
 });

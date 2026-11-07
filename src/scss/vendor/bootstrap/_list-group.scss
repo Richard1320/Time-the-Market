@@ -1,149 +1,190 @@
-// Base class
-//
-// Easily usable on <ul>, <ol>, or <div>.
+@use "config" as *;
+@use "functions" as *;
+@use "mixins/border-radius" as *;
+@use "layout/breakpoints" as *;
+@use "mixins/tokens" as *;
 
-.list-group {
-  display: flex;
-  flex-direction: column;
+$list-group-tokens: () !default;
 
-  // No need to set list-style: none; since .list-group-item is block level
-  padding-left: 0; // reset padding because ul and ol
-  margin-bottom: 0;
-}
+// scss-docs-start list-group-tokens
+// stylelint-disable-next-line scss/dollar-variable-default
+$list-group-tokens: defaults(
+  (
+    --list-group-color: var(--fg-body),
+    --list-group-bg: var(--bg-body),
+    --list-group-border-color: var(--border-color),
+    --list-group-border-width: var(--border-width),
+    --list-group-border-radius: var(--radius-5),
+    --list-group-item-padding-x: var(--spacer),
+    --list-group-item-padding-y: var(--spacer-2),
+    --list-group-action-color: var(--fg-2),
+    --list-group-action-hover-color: var(--fg-1),
+    --list-group-action-hover-bg: var(--bg-1),
+    --list-group-action-active-color: var(--fg-body),
+    --list-group-action-active-bg: var(--bg-2),
+    --list-group-disabled-color: var(--fg-3),
+    --list-group-disabled-bg: var(--bg-body),
+    --list-group-active-color: var(--primary-contrast),
+    --list-group-active-bg: var(--primary-bg),
+    --list-group-active-border-color: var(--primary-bg),
+  ),
+  $list-group-tokens
+);
+// scss-docs-end list-group-tokens
 
+@layer components {
+  .list-group {
+    @include tokens($list-group-tokens);
 
-// Interactive list items
-//
-// Use anchor or button elements instead of `li`s or `div`s to create interactive
-// list items. Includes an extra `.active` modifier class for selected items.
+    display: flex;
+    flex-direction: column;
 
-.list-group-item-action {
-  width: 100%; // For `<button>`s (anchors become 100% by default though)
-  color: $list-group-action-color;
-  text-align: inherit; // For `<button>`s (anchors inherit)
-
-  // Hover state
-  @include hover-focus {
-    z-index: 1; // Place hover/focus items above their siblings for proper border styling
-    color: $list-group-action-hover-color;
-    text-decoration: none;
-    background-color: $list-group-hover-bg;
-  }
-
-  &:active {
-    color: $list-group-action-active-color;
-    background-color: $list-group-action-active-bg;
-  }
-}
-
-
-// Individual list items
-//
-// Use on `li`s or `div`s within the `.list-group` parent.
-
-.list-group-item {
-  position: relative;
-  display: block;
-  padding: $list-group-item-padding-y $list-group-item-padding-x;
-  // Place the border on the list items and negative margin up for better styling
-  margin-bottom: -$list-group-border-width;
-  color: $list-group-color;
-  background-color: $list-group-bg;
-  border: $list-group-border-width solid $list-group-border-color;
-
-  &:first-child {
-    @include border-top-radius($list-group-border-radius);
-  }
-
-  &:last-child {
+    // No need to set list-style-type: ""; since .list-group-item is block level
+    padding-inline-start: 0; // reset padding because ul and ol
     margin-bottom: 0;
-    @include border-bottom-radius($list-group-border-radius);
+    @include border-radius(var(--list-group-border-radius));
   }
 
-  &.disabled,
-  &:disabled {
-    color: $list-group-disabled-color;
-    pointer-events: none;
-    background-color: $list-group-disabled-bg;
+  .list-group-numbered {
+    list-style-type: none;
+    counter-reset: section;
+
+    > .list-group-item::before {
+      // Increments only this instance of the section counter
+      content: counters(section, ".") ". ";
+      counter-increment: section;
+    }
   }
 
-  // Include both here for `<a>`s and `<button>`s
-  &.active {
-    z-index: 2; // Place active items above their siblings for proper border styling
-    color: $list-group-active-color;
-    background-color: $list-group-active-bg;
-    border-color: $list-group-active-border-color;
+  // Individual list items
+  //
+  // Use on `li`s or `div`s within the `.list-group` parent.
+
+  .list-group-item {
+    position: relative;
+    display: block;
+    padding: var(--list-group-item-padding-y) var(--list-group-item-padding-x);
+    color: var(--theme-fg, var(--list-group-color));
+    text-decoration: none;
+    background-color: var(--theme-bg-subtle, var(--list-group-bg));
+    border: var(--list-group-border-width) solid var(--theme-border, var(--list-group-border-color));
+
+    &:first-child {
+      @include border-top-radius(inherit);
+    }
+
+    &:last-child {
+      @include border-bottom-radius(inherit);
+    }
+
+    &.disabled,
+    &:disabled {
+      color: var(--list-group-disabled-color);
+      pointer-events: none;
+      background-color: var(--list-group-disabled-bg);
+    }
+
+    // Include both here for `<a>`s and `<button>`s
+    &.active {
+      z-index: 2; // Place active items above their siblings for proper border styling
+      color: var(--list-group-active-color);
+      background-color: var(--list-group-active-bg);
+      border-color: var(--list-group-active-border-color);
+    }
+
+    // stylelint-disable-next-line scss/selector-no-redundant-nesting-selector
+    & + .list-group-item {
+      border-block-start-width: 0;
+
+      &.active {
+        margin-top: calc(-1 * var(--list-group-border-width));
+        border-block-start-width: var(--list-group-border-width);
+      }
+    }
   }
-}
 
+  // Interactive list items
+  //
+  // Use anchor or button elements instead of `li`s or `div`s to create interactive
+  // list items. Includes an extra `.active` modifier class for selected items.
 
-// Horizontal
-//
-// Change the layout of list group items from vertical (default) to horizontal.
+  .list-group-item-action {
+    width: 100%; // For `<button>`s (anchors become 100% by default though)
+    color: var(--theme-fg, var(--list-group-action-color));
+    text-align: inherit; // For `<button>`s (anchors inherit)
+    text-decoration: none;
 
-@each $breakpoint in map-keys($grid-breakpoints) {
-  @include media-breakpoint-up($breakpoint) {
-    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    &:not(.active) {
+      // Hover state
+      &:hover,
+      &:focus {
+        z-index: 1; // Place hover/focus items above their siblings for proper border styling
+        color: var(--theme-fg-emphasis, var(--list-group-action-hover-color));
+        text-decoration: none;
+        background-color: var(--theme-bg-muted, var(--list-group-action-hover-bg));
+      }
 
-    .list-group-horizontal#{$infix} {
-      flex-direction: row;
+      &:active {
+        color: var(--theme-fg-emphasis, var(--list-group-action-active-color));
+        background-color: var(--theme-bg-muted, var(--list-group-action-active-bg));
+      }
+    }
+  }
 
-      .list-group-item {
-        margin-right: -$list-group-border-width;
-        margin-bottom: 0;
+  // Horizontal
+  //
+  // Change the layout of list group items from vertical (default) to horizontal.
+  // The responsive variants use container queries, so wrap the list group in a
+  // query container (e.g., the `.contains-inline` utility) for them to take effect.
 
-        &:first-child {
-          @include border-left-radius($list-group-border-radius);
-          @include border-top-right-radius(0);
-        }
+  @include loop-breakpoints-up() using ($breakpoint, $prefix) {
+    .#{$prefix}list-group-horizontal {
+      @include container-breakpoint-up($breakpoint) {
+        flex-direction: row;
 
-        &:last-child {
-          margin-right: 0;
-          @include border-right-radius($list-group-border-radius);
-          @include border-bottom-left-radius(0);
+        > .list-group-item {
+          &:first-child:not(:last-child) {
+            @include border-bottom-start-radius(var(--list-group-border-radius));
+            @include border-top-end-radius(0);
+          }
+
+          &:last-child:not(:first-child) {
+            @include border-top-end-radius(var(--list-group-border-radius));
+            @include border-bottom-start-radius(0);
+          }
+
+          &.active {
+            margin-top: 0;
+          }
+
+          + .list-group-item {
+            border-block-start-width: var(--list-group-border-width);
+            border-inline-start-width: 0;
+
+            &.active {
+              margin-inline-start: calc(-1 * var(--list-group-border-width));
+              border-inline-start-width: var(--list-group-border-width);
+            }
+          }
         }
       }
     }
   }
-}
 
+  // Flush list items
+  //
+  // Remove borders and border-radius to keep list group items edge-to-edge. Most
+  // useful within other components (e.g., cards).
 
-// Flush list items
-//
-// Remove borders and border-radius to keep list group items edge-to-edge. Most
-// useful within other components (e.g., cards).
-
-.list-group-flush {
-  .list-group-item {
-    border-right: 0;
-    border-left: 0;
+  .list-group-flush {
     @include border-radius(0);
 
-    &:last-child {
-      margin-bottom: -$list-group-border-width;
+    > .list-group-item {
+      border-width: 0 0 var(--list-group-border-width);
+
+      &:last-child {
+        border-block-end-width: 0;
+      }
     }
   }
-
-  &:first-child {
-    .list-group-item:first-child {
-      border-top: 0;
-    }
-  }
-
-  &:last-child {
-    .list-group-item:last-child {
-      margin-bottom: 0;
-      border-bottom: 0;
-    }
-  }
-}
-
-
-// Contextual variants
-//
-// Add modifier classes to change text and background color on individual items.
-// Organizationally, this must come after the `:hover` states.
-
-@each $color, $value in $theme-colors {
-  @include list-group-item-variant($color, theme-color-level($color, -9), theme-color-level($color, 6));
 }

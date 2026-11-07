@@ -1,4 +1,3 @@
-@import 'vendor/bootstrap/bootstrap';
+@use 'vendor/bootstrap/bootstrap';
 
-@import 'utilities/_variables';
-@import 'components/_form';
+@use 'components/form';
